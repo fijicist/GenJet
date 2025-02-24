@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
+# Hypergraph
+from torch_geometric.nn import HypergraphConv
 
 from .spectral_normalization import SpectralNorm
 
@@ -228,6 +230,7 @@ class MPLayer(nn.Module):
         batch_size = x.size(0)
         num_nodes = x.size(1)
 
+
         assert not (use_mask and mask is None), "need ``mask`` tensor if using ``use_mask`` option"
         assert not (
             self.clabels and labels is None
@@ -281,6 +284,38 @@ class MPLayer(nn.Module):
 
         return x
 
+    # #Hypergraph
+    # def _getA_fully_connected(self, x, batch_size, num_nodes, use_mask, mask):
+    #     """
+    #     Returns tensor of inputs to the edge networks using a fully connected graph.
+    #     """
+    #     # Ensure x has shape [batch_size, num_particles, input_node_size]
+    #     assert len(x.shape) == 3, "Input x must have shape [batch_size, num_particles, input_node_size]"
+    #     
+    #     num_coords = 3 if self.coords == "cartesian" else 2
+    #     out_size = 2 * self.input_node_size + self.num_ef
+    #
+    #     x1 = x.unsqueeze(2).expand(-1, -1, num_nodes, -1)  # Shape: [batch_size, num_particles, num_nodes, input_node_size]
+    #     x2 = x.unsqueeze(1).expand(-1, num_nodes, -1, -1)  # Shape: [batch_size, num_nodes, num_particles, input_node_size]
+    #
+    #     if self.pos_diffs:
+    #         diffs = x2[:, :, :, :num_coords] - x1[:, :, :, :num_coords]
+    #         dists = torch.norm(diffs + 1e-12, dim=3).unsqueeze(3)
+    #
+    #         if self.delta_r and self.delta_coords:
+    #             A = torch.cat((x1, x2, diffs, dists), dim=3)
+    #         elif self.delta_r or self.all_ef:
+    #             A = torch.cat((x1, x2, dists), dim=3)
+    #         elif self.delta_coords:
+    #             A = torch.cat((x1, x2, diffs), dim=3)
+    #         else:
+    #             A = torch.cat((x1, x2), dim=3)
+    #     else:
+    #         A = torch.cat((x1, x2), dim=3)
+    #
+    #     return A.view(batch_size * num_nodes * num_nodes, out_size)
+    #
+
     def _getA_fully_connected(self, x, batch_size, num_nodes, use_mask, mask):
         """
         returns tensor of inputs to the edge networks using a fully connected graph
@@ -291,8 +326,11 @@ class MPLayer(nn.Module):
 
         A_mask = None
 
+
         x1 = x.repeat(1, 1, num_nodes).view(batch_size, num_nodes * num_nodes, node_size)
         x2 = x.repeat(1, num_nodes, 1)
+
+        print(x1, x1.shape, x2, x2.shape, num_nodes, num_coords, out_size, node_size)
 
         if self.pos_diffs:
             # get the extra edge features for the edge networks
@@ -448,7 +486,7 @@ class MPNet(nn.Module):
 
         self.linear_args = linear_args
 
-        # copy all keys not specified in ``mp_args_first_layer`` dict from ``mp_args` dict
+        # cop()y all keys not specified in ``mp_args_first_layer`` dict from ``mp_args` dict
         for key in mp_args:
             if key not in mp_args_first_layer:
                 mp_args_first_layer[key] = mp_args[key]
@@ -601,7 +639,10 @@ class MPGenerator(MPNet):
     def _pre_mp(self, x, labels):
         """Pre-message-passing operations"""
         if self.lfc:
+            print(x, x.shape)
             x = self.lfc_layer(x).reshape(x.shape[0], self.num_particles, self.input_node_size)
+            print(x, x.shape)
+            exit()
 
         return x
 
@@ -755,6 +796,148 @@ class MPGenerator(MPNet):
         lfc_str = f"LFC = {self.lfc_layer},\n" if self.lfc else ""
         fmg_str = f"FMG = {self.fmg_layer},\n" if hasattr(self, "fmg_layer") else ""
         return f"{self.__class__.__name__}({lfc_str}{fmg_str}MPLayers = {self.mp_layers})"
+
+
+# Hypergraph
+# class MPGeneratorWithHypergraph(MPGenerator):
+#     """
+#     Extended MPGenerator that incorporates hypergraph (n-point) features.
+#     
+#     In addition to the usual message-passing (edge) operations, this generator 
+#     uses a HypergraphConv branch to process hyperedge connectivity and attributes.
+#
+#     Args:
+#         hyperedge_feature_dim (int): dimension of hyperedge attributes.
+#         hyper_hidden_dim (int): hidden dimension for the hypergraph branch.
+#         lfc (bool): use latent fully connected layer (as in MPGenerator). Defaults to False.
+#         lfc_latent_size (int): latent vector size if lfc is used. Defaults to 128.
+#         **mpnet_args: All other keyword arguments that are expected by MPNet.
+#                      (For example, you must supply 'num_particles' and 'input_node_size'.)
+#     """
+#     def __init__(self, hyperedge_feature_dim, hyper_hidden_dim, lfc: bool = False, lfc_latent_size: int = 128, **mpnet_args):
+#         # Get the allowed keys from the MPNet constructor signature.
+#         allowed_keys = inspect.signature(MPNet.__init__).parameters.keys()
+#         # Filter the provided mpnet_args, keeping only those keys.
+#         filtered_args = {k: v for k, v in mpnet_args.items() if k in allowed_keys}
+#         # Call the MPGenerator (and thus MPNet) constructor with only the accepted keyword arguments.
+#         super(MPGeneratorWithHypergraph, self).__init__(lfc=lfc, lfc_latent_size=lfc_latent_size, **filtered_args)
+#         
+#         # Hypergraph branch: process node features via HypergraphConv.
+#         # self.output_node_size is already defined by MPNet/MPGenerator.
+#         self.hyper_conv = HypergraphConv(self.output_node_size, hyper_hidden_dim)
+#         # Project hyperedge attributes into the hyper branch’s feature space.
+#         self.hyper_attr_layer = nn.Linear(hyperedge_feature_dim, hyper_hidden_dim)
+#         # Combiner fuses the output of the main (message-passing) branch with hypergraph branch.
+#         self.combiner = nn.Linear(self.output_node_size + hyper_hidden_dim, self.output_node_size)
+#
+#     def forward(self, x, labels=None, hyperedge_index=None, hyperedge_attr=None):
+#         """
+#         Forward pass extended to accept hypergraph inputs.
+#
+#         Args:
+#             x (Tensor): input tensor (either latent noise if using LFC or particle features).
+#             labels (Tensor, optional): conditioning labels.
+#             hyperedge_index (Tensor, optional): tensor of shape [n, num_hyperedges] defining hyperedge membership.
+#             hyperedge_attr (Tensor, optional): tensor of shape [num_hyperedges, hyperedge_feature_dim] with hyperedge attributes.
+#
+#         Returns:
+#             Tensor: output of shape [batch_size, num_particles, output_node_size] fusing
+#                     the message-passing branch and the hypergraph branch.
+#         """
+#         # Run the base MPGenerator forward pass.
+#         x_mp = super(MPGeneratorWithHypergraph, self).forward(x, labels)
+#
+#         if hyperedge_index is not None and hyperedge_attr is not None:
+#             batch_size, num_particles, feat_dim = x_mp.size()
+#             # Flatten node features for hypergraph convolution.
+#             x_flat = x_mp.view(-1, feat_dim)  # shape: [batch_size*num_particles, feat_dim]
+#             # Apply hypergraph convolution. Note that hyperedge_index is assumed global.
+#             x_hyper = self.hyper_conv(x_flat, hyperedge_index)
+#             # Process hyperedge attributes and, for a first test, average the projections.
+#             hyper_msg = self.hyper_attr_layer(hyperedge_attr)  # shape: [num_hyperedges, hyper_hidden_dim]
+#             hyper_msg_avg = hyper_msg.mean(dim=0, keepdim=True)  # shape: [1, hyper_hidden_dim]
+#             # Broadcast and add hyper edge message to the convolved node features.
+#             x_hyper = x_hyper + hyper_msg_avg
+#             # Reshape to original node dimensions.
+#             x_hyper = x_hyper.view(batch_size, num_particles, -1)
+#             # Concatenate the MP branch output and the hypergraph branch output.
+#             x_combined = torch.cat([x_mp, x_hyper], dim=2)
+#             # Fuse them via a combiner linear layer.
+#             x_out = self.combiner(x_combined)
+#         else:
+#             x_out = x_mp
+#
+#         return x_out
+#
+
+class MPGeneratorWithHypergraph(MPGenerator):
+    """
+    Extended MPGenerator that incorporates hypergraph (n-point) features.
+    
+    In addition to the usual message-passing (edge) operations, this generator 
+    uses a HypergraphConv branch to process hyperedge connectivity and attributes.
+    
+    Args:
+        hyperedge_feature_dim (int): dimension of hyperedge attributes.
+        hyper_hidden_dim (int): hidden dimension for the hypergraph branch.
+        lfc (bool): same as in MPGenerator.
+        lfc_latent_size (int): same as in MPGenerator.
+        **mpnet_args: all other arguments for the MPNet base class.
+    """
+    def __init__(self, hyperedge_feature_dim, hyper_hidden_dim, lfc: bool = False, 
+                 lfc_latent_size: int = 128, **mpnet_args):
+        super(MPGeneratorWithHypergraph, self).__init__(lfc=lfc, lfc_latent_size=lfc_latent_size, **mpnet_args)
+        # Hypergraph branch: process node features via HypergraphConv.
+        # Note: self.output_node_size is produced by the MPGenerator message passing.
+        self.hyper_conv = HypergraphConv(self.output_node_size, hyper_hidden_dim)
+        # Project hyperedge attributes into the hyper branch’s feature space.
+        self.hyper_attr_layer = nn.Linear(hyperedge_feature_dim, hyper_hidden_dim)
+        # A combiner to fuse the MP and hypergraph branches.
+        self.combiner = nn.Linear(self.output_node_size + hyper_hidden_dim, self.output_node_size)
+
+    def forward(self, x, labels=None, hyperedge_index=None, hyperedge_attr=None):
+        """
+        Forward pass extended to accept hypergraph inputs.
+        
+        Args:
+          - x: input tensor (either latent noise if using LFC or particle features).
+          - labels: conditioning labels (if any).
+          - hyperedge_index: tensor of shape [n, num_hyperedges] defining hyperedge membership.
+          - hyperedge_attr: tensor of shape [num_hyperedges, hyperedge_feature_dim] with hyperedge attributes.
+        
+        Returns:
+          - A tensor of shape [batch_size, num_particles, output_node_size] fusing the 
+            MP-generated features and hypergraph branch features.
+        """
+        # Run the base MPGenerator forward to get the standard output.
+        x_mp = super(MPGeneratorWithHypergraph, self).forward(x, labels)
+        
+        # If hypergraph inputs are provided, process them.
+        if hyperedge_index is not None and hyperedge_attr is not None:
+            batch_size, num_particles, feat_dim = x_mp.size()
+            # Flatten the node feature tensor (each node is processed individually).
+            x_flat = x_mp.view(-1, feat_dim)  # shape: [batch_size*num_particles, feat_dim]
+            # Apply hypergraph convolution: note that hyperedge_index is expected to be global
+            # (i.e. indexing nodes across the entire batch).
+            x_hyper = self.hyper_conv(x_flat, hyperedge_index)
+            
+            # Process the hyperedge attributes and aggregate to form a hyper message.
+            hyper_msg = self.hyper_attr_layer(hyperedge_attr)  # shape: [num_hyperedges, hyper_hidden_dim]
+            # For a first test, simply average the hyperedge attribute projections
+            hyper_msg_avg = hyper_msg.mean(dim=0, keepdim=True)  # shape: [1, hyper_hidden_dim]
+            # Broadcast the hyper message to all nodes:
+            x_hyper = x_hyper + hyper_msg_avg
+            # Reshape back to [batch_size, num_particles, hyper_hidden_dim]
+            x_hyper = x_hyper.view(batch_size, num_particles, -1)
+            # Concatenate along the feature dimension.
+            x_combined = torch.cat([x_mp, x_hyper], dim=2)
+            # Fuse the concatenated features via a combiner linear layer.
+            x_out = self.combiner(x_combined)
+        else:
+            # If no hypergraph inputs, simply use the MPGenerator output.
+            x_out = x_mp
+            
+        return x_out
 
 
 class MPDiscriminator(MPNet):

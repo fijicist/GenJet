@@ -4,18 +4,30 @@ from jetnet import evaluation
 from jetnet.datasets.normalisations import FeaturewiseLinearBounded, FeaturewiseLinear
 
 import setup_training
+
+# importing hypergraph
+from setup_training import setup_mpgan_with_hyper
+from torch.utils.data import random_split
+from torch_geometric.nn import HypergraphConv
+from mpgan import MPGeneratorWithHypergraph
+import gc
+from torch_geometric.utils import to_dense_batch
+from torch_geometric.data import DataLoader
+
+
 from mpgan import augment, mask_manual
 import plotting
 
 import torch
 from torch import Tensor
-from torch.utils.data import DataLoader
+# from torch.utils.data import DataLoader
 from torch.autograd import Variable
 from torch.autograd import grad as torch_grad
 from torch.distributions.normal import Normal
 
 import numpy as np
 
+import os
 from os import remove
 from os.path import exists
 
@@ -45,34 +57,78 @@ def main():
     )
     jet_norm = FeaturewiseLinear(feature_scales=1.0 / args.num_hits)
 
-    data_args = {
-        "jet_type": args.jets,
-        "data_dir": args.datasets_path,
-        "num_particles": args.num_hits,
-        "particle_features": (
-            JetNet.all_particle_features if args.mask else JetNet.all_particle_features[:-1]
-        ),
-        "jet_features": (
-            "num_particles" if (args.clabels or args.mask_c or args.gapt_mask) else None
-        ),
-        "particle_normalisation": particle_norm,
-        "jet_normalisation": jet_norm,
-        "split_fraction": [args.ttsplit, 1 - args.ttsplit, 0],
-    }
+    # Hypergraph
+    print("Loading hypergraph dataset from .pt files...")
+    dataset_parts = []
+    folder_path = '/home/anuranja/sanmay_project/work/toy_jet_classification/analysis/graph_objects/particle_graphs'  #'./graph_objects/particle_graphs/'
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith('.pt'):
+            part = torch.load(os.path.join(folder_path, file_name))
+            # Assume each loaded file is a list of PyG Data objects
+            dataset_parts += part  
+            del part
+            gc.collect()
 
-    X_train = JetNet(**data_args, split="train")
-    X_train_loaded = DataLoader(X_train, shuffle=True, batch_size=args.batch_size, pin_memory=True)
+    dataset_size = len(dataset_parts)
+    train_size = int(0.8 * dataset_size)
+    test_size = dataset_size - train_size
+    train_dataset, test_dataset = random_split(dataset_parts, [train_size, test_size])
 
-    X_test = JetNet(**data_args, split="valid")
-    X_test_loaded = DataLoader(X_test, batch_size=args.batch_size, pin_memory=True)
-    logging.info(f"Data loaded \n X_train \n {X_train} \n X_test \n {X_test}")
+    X_train_loaded = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
+    X_test_loaded = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
+
+    print("Train Loader:", X_train_loaded)
+    print("Test Loader:", X_test_loaded)
+    # Optional: print out a batch summary to verify hyperedge fields are present.
+    for step, data in enumerate(X_train_loaded):
+        print(f"Step {step+1}:")
+        print(f"Number of graphs in the current batch: {data.num_graphs}")
+        print(data)
+        break  # just inspect one batch
+    print("Data loading completed.")
+
+    # data_args = {
+    #     "jet_type": args.jets,
+    #     "data_dir": args.datasets_path,
+    #     "num_particles": args.num_hits,
+    #     "particle_features": (
+    #         JetNet.all_particle_features if args.mask else JetNet.all_particle_features[:-1]
+    #     ),
+    #     "jet_features": (
+    #         "num_particles" if (args.clabels or args.mask_c or args.gapt_mask) else None
+    #     ),
+    #     "particle_normalisation": particle_norm,
+    #     "jet_normalisation": jet_norm,
+    #     "split_fraction": [args.ttsplit, 1 - args.ttsplit, 0],
+    # }
+    #
+    # X_train = JetNet(**data_args, split="train")
+    # X_train_loaded = DataLoader(X_train, shuffle=True, batch_size=args.batch_size, pin_memory=True)
+    #
+    # X_test = JetNet(**data_args, split="valid")
+    # X_test_loaded = DataLoader(X_test, batch_size=args.batch_size, pin_memory=True)
+
+    logging.info(f"Data loaded \n X_train \n {X_train_loaded} \n X_test \n {X_test_loaded}")
 
     # print(torch.max(X_train.view(-1, 30 * 4), axis=0))
     # print(torch.max(X_test.view(-1, 30 * 4), axis=0))
 
-    G, D = setup_training.models(args)
-    model_train_args, model_eval_args, extra_args = setup_training.get_model_args(args)
-    logging.info("Models loaded")
+    #Hypergraph
+    if args.model == "mpgan":
+        _, D = setup_training.models(args)
+        G = setup_mpgan_with_hyper(args, gen=True)
+        logging.info("MPGeneratorWithHypergraph initialized:")
+        logging.info(G)
+
+        model_train_args, model_eval_args, extra_args = setup_training.get_model_args(args)
+        logging.info("Models loaded")
+
+    else:
+        G, D = setup_training.models(args)
+
+        model_train_args, model_eval_args, extra_args = setup_training.get_model_args(args)
+        logging.info("Models loaded")
+
 
     G_optimizer, D_optimizer = setup_training.optimizers(args, G, D)
     logging.info("Optimizers loaded")
@@ -81,10 +137,10 @@ def main():
 
     train(
         args,
-        X_train,
+        train_dataset,
         X_train_loaded,
-        X_test,
         X_test_loaded,
+        test_dataset,
         G,
         D,
         G_optimizer,
@@ -202,8 +258,18 @@ def gen(
         noise, point_noise = get_gen_noise(
             model_args, num_samples, num_particles, model, device, noise_std
         )
-
-    gen_data = G(noise, labels)
+    
+    # Hypergraph
+    # Replace the generator with the hypergraph-enabled version.
+    # (Set hyperedge_feature_dim and hyper_hidden_dim with actual numeric values, e.g. 10 and 32.)
+    G = MPGeneratorWithHypergraph(
+        hyperedge_feature_dim=10, 
+        hyper_hidden_dim=32, 
+        lfc=args.lfc, 
+        lfc_latent_size=args.lfc_latent_size, 
+        **model_train_args
+    )
+    ## gen_data = G(noise, labels)
 
     if "mask_manual" in extra_args and extra_args["mask_manual"]:
         # TODO: add pt_cutoff to extra_args
@@ -420,9 +486,19 @@ def train_D(
     D_optimizer.zero_grad()
     G.eval()
 
-    run_batch_size = data.shape[0]
+    #Hypergraph
+    run_batch_size = data.batch_size
 
-    D_real_output = D(data.clone(), labels)
+    # run_batch_size = data.shape[0]
+
+    #Hypergraph
+    # Group node features by graph and pad/truncate to num_particles
+    num_particles = 30  # Ensure this is defined in your args
+    node_features, mask = to_dense_batch(data.x, batch=data.batch, max_num_nodes=num_particles)
+    D_real_output = D(node_features, labels)
+
+    # D_real_output = D(data.x.clone(), labels)
+
     log(f"D real output: \n {D_real_output[:10]}")
 
     if gen_data is None:
@@ -827,55 +903,108 @@ def train_loop(
     lenX = len(X_train_loaded)
 
     for batch_ndx, data in tqdm(
-        enumerate(X_train_loaded), total=lenX, mininterval=0.1, desc=f"Epoch {epoch}"
+        enumerate(X_train_loaded), total=lenX, mininterval=0.1, desc=f"epoch {epoch}"
     ):
+
+        #Hypergraph
         labels = (
-            data[1].to(args.device) if (args.clabels or args.mask_c or args.gapt_mask) else None
+            data.y.to(args.device) if (args.clabels or args.mask_c or args.gapt_mask) else None
         )
-        data = data[0].to(args.device)
+        data = data.to(args.device)
+
+        # labels = (
+        #     data[1].to(args.device) if (args.clabels or args.mask_c or args.gapt_mask) else none
+        # )
+        # data = data[0].to(args.device)
+
+        #hypergraph 
+        # extract hyperedge information if available (data objects transfer all attributes)
+        hyperedge_index = data.hyperedge_index if hasattr(data, 'hyperedge_index') else None
+        hyperedge_attr = data.hyperedge_attr if hasattr(data, 'hyperedge_attr') else None
 
         if args.model == "pcgan":
             # run through pre-trained inference network first i.e. find latent representation
-            data = model_train_args["pcgan_G_inv"](data.clone())
+            data = model_train_args["pcgan_g_inv"](data.clone())
 
         if args.num_critic > 1 or (batch_ndx == 0 or (batch_ndx - 1) % args.num_gen == 0):
-            D_loss_items = train_D(
-                model_train_args,
-                D,
-                G,
-                D_optimizer,
-                G_optimizer,
-                data,
-                loss=args.loss,
-                loss_args=D_loss_args,
-                gen_args=gen_args,
-                augment_args=args,
-                labels=labels,
-                model=args.model,
-                epoch=epoch - 1,
-                # print outputs for the last iteration of each epoch
-                print_output=(batch_ndx == lenX - 1),
-                **extra_args,
+            
+            #hypergraph
+            d_loss_items = train_D(
+            model_train_args,
+            D,
+            G,
+            D_optimizer,
+            G_optimizer,
+            data,
+            loss=args.loss,
+            loss_args=D_loss_args,
+            gen_args=gen_args,
+            augment_args=args,
+            labels=labels,
+            model=args.model,
+            epoch=epoch - 1,
+            print_output=(batch_ndx == lenX - 1),
+            hyperedge_index=hyperedge_index,
+            hyperedge_attr=hyperedge_attr,
+            **extra_args,
             )
+
+            # d_loss_items = train_d(
+            #     model_train_args,
+            #     d,
+            #     g,
+            #     d_optimizer,
+            #     g_optimizer,
+            #     data,
+            #     loss=args.loss,
+            #     loss_args=d_loss_args,
+            #     gen_args=gen_args,
+            #     augment_args=args,
+            #     labels=labels,
+            #     model=args.model,
+            #     epoch=epoch - 1,
+            #     # print outputs for the last iteration of each epoch
+            #     print_output=(batch_ndx == lenx - 1),
+            #     **extra_args,
+            # )
 
             for key in D_losses:
-                epoch_loss[key] += D_loss_items[key]
+                epoch_loss[key] += d_loss_items[key]
 
         if args.num_critic == 1 or (batch_ndx - 1) % args.num_critic == 0:
-            epoch_loss["G"] += train_G(
-                model_train_args,
-                D,
-                G,
-                G_optimizer,
-                loss=args.loss,
-                batch_size=args.batch_size,
-                gen_args=gen_args,
-                augment_args=args,
-                labels=labels,
-                model=args.model,
-                epoch=epoch - 1,
-                **extra_args,
+
+            #hypergraph
+            epoch_loss["g"] += train_G(
+            model_train_args,
+            D,
+            G,
+            G_optimizer,
+            loss=args.loss,
+            batch_size=args.batch_size,
+            gen_args=gen_args,
+            augment_args=args,
+            labels=labels,
+            model=args.model,
+            epoch=epoch - 1,
+            hyperedge_index=hyperedge_index,
+            hyperedge_attr=hyperedge_attr,
+            **extra_args,
             )
+
+            # epoch_loss["g"] += train_g(
+            #     model_train_args,
+            #     d,
+            #     g,
+            #     g_optimizer,
+            #     loss=args.loss,
+            #     batch_size=args.batch_size,
+            #     gen_args=gen_args,
+            #     augment_args=args,
+            #     labels=labels,
+            #     model=args.model,
+            #     epoch=epoch - 1,
+            #     **extra_args,
+            # )
 
         if args.bottleneck:
             if batch_ndx == 10:

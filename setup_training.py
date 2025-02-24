@@ -1192,6 +1192,110 @@ def init():
     return args
 
 
+#Hypergraph
+def setup_mpgan_with_hyper(args, gen):
+    """This function gathers all the necessary arguments for the base MPNet
+    (such as num_particles, input_node_size, mp_iters, fe_layers, etc.) and then
+    adds hypergraph-specific parameters (hyperedge_feature_dim and hyper_hidden_dim).
+
+    Args:
+        args: the parsed command-line arguments (with keys such as num_hits, hidden_node_size, etc.).
+        gen (bool): whether this model is the generator.
+
+    Returns:
+        An instance of MPGeneratorWithHypergraph configured with the provided parameters.
+    """
+    from mpgan import MPGeneratorWithHypergraph
+
+    # -------------------------------
+    # Linear network and message-passing arguments (for both generator and discriminator)
+    # These mirror what you have in setup_mpgan().
+    linear_args = {
+        "leaky_relu_alpha": args.leaky_relu_alpha,
+        "dropout_p": args.gen_dropout if gen else args.disc_dropout,
+        "batch_norm": args.batch_norm_gen if gen else args.batch_norm_disc,
+        "spectral_norm": args.spectral_norm_gen if gen else args.spectral_norm_disc,
+    }
+
+    mp_args = {
+        "pos_diffs": args.pos_diffs,
+        "all_ef": args.all_ef,
+        "coords": args.coords,
+        "delta_coords": args.deltacoords,
+        "delta_r": args.deltar,
+        "int_diffs": args.int_diffs,
+        "clabels": args.clabels,
+        "mask_fne_np": args.mask_fne_np,
+        "fully_connected": args.fully_connected,
+        "num_knn": args.num_knn,
+        "self_loops": args.self_loops,
+        "sum": args.sum,
+    }
+
+    mp_args_first_layer_gen = {"clabels": args.clabels_first_layer}
+
+    # -------------------------------
+    # Common arguments required by MPNet:
+    common_mpnet_args = {
+        "num_particles": args.num_hits,          # maximum particles per jet
+        "hidden_node_size": args.hidden_node_size, 
+        "fe_layers": args.fe,
+        "fn_layers": args.fn,
+        "fn1_layers": None,
+    }
+
+    # -------------------------------
+    # Generator-specific arguments (used by MPGenerator)
+    gen_args = {
+        "mp_iters": args.mp_iters_gen,
+        "fe1_layers": args.fe1g if args.fe1g else None,
+        "final_activation": "tanh" if args.gtanh else "",
+        "output_node_size": args.node_feat_size,
+        "input_node_size": args.latent_node_size,  # note: here we use the latent node size as the input size
+        "lfc": args.lfc,
+        "lfc_latent_size": args.lfc_latent_size,
+    }
+
+    # -------------------------------
+    # Masking arguments (packaged into mask_args, not passed at top level)
+    mask_args = {
+        "mask_feat": args.mask_feat,
+        "mask_feat_bin": args.mask_feat_bin,
+        "mask_weights": args.mask_weights,
+        "mask_manual": args.mask_manual,
+        "mask_exp": args.mask_exp,
+        "mask_real_only": args.mask_real_only,
+        "mask_learn": args.mask_learn,
+        "mask_learn_bin": args.mask_learn_bin,
+        "mask_learn_sep": args.mask_learn_sep,
+        "fmg": args.fmg,
+        "mask_disc_sep": args.mask_disc_sep,
+        "mask_fnd_np": args.mask_fnd_np,
+        "mask_c": args.mask_c,
+        "mask_fne_np": args.mask_fne_np,
+    }
+
+    # -------------------------------
+    # Hypergraph-specific arguments.
+    # These must be provided in your args (either via command-line or defaults).
+    hyper_args = {
+        "hyperedge_feature_dim": 10, #args.hyperedge_feature_dim,
+        "hyper_hidden_dim": 32, #args.hyper_hidden_dim,
+    }
+
+    # -------------------------------
+    # Finally, instantiate the hypergraph-enabled generator by merging all dictionaries.
+    return MPGeneratorWithHypergraph(
+        **hyper_args,
+        **gen_args,
+        **common_mpnet_args,
+        mp_args=mp_args,
+        mp_args_first_layer=mp_args_first_layer_gen,
+        linear_args=linear_args,
+        mask_args=mask_args,
+    )
+
+
 def setup_mpgan(args, gen):
     """Setup MPGAN models"""
     from mpgan import MPGenerator, MPDiscriminator
