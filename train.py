@@ -35,6 +35,29 @@ from tqdm import tqdm
 
 import logging
 
+def ensure_device_consistency(models_list, optimizers_list=None, device=None):
+    """
+    Ensure all models and their optimizers are on the same device
+    """
+    if device is None:
+        # Get device from first model
+        device = next(models_list[0].parameters()).device
+    
+    # Move all models to the specified device
+    for model in models_list:
+        model.to(device)
+    
+    # Reset optimizers if provided (optimizers need to be recreated after model movement)
+    if optimizers_list:
+        for optimizer in optimizers_list:
+            # Ensure optimizer states are on the correct device
+            for state in optimizer.state.values():
+                for k, v in state.items():
+                    if isinstance(v, torch.Tensor):
+                        state[k] = v.to(device)
+    
+    return device
+
 
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -211,76 +234,141 @@ def gen(
     """
     Generates ``num_samples`` jets in one go. Can optionally pass pre-specified ``noise``,
     else will randomly sample from a normal distribution.
-
-    Needs an dict ``model_args`` containing the following model-specific args.
-
-    mpgan:
-    ``lfc`` (bool) use the latent fully connected layer (/ best football team in the world),
-    ``lfc_latent_size`` (int) size of latent layer if ``lfc``,
-    ``mask_learn_sep`` (bool) separate layer to learn masks,
-    ``latent_node_size`` (int) size of each node's latent space, if not using lfc.
-
-    rgan, graphcnngan:
-    ``latent_dim`` (int)
-
-    treegan:
-    ``treegang_features`` (list)
-
-    pcgan:
-    ``pcgan_latent_dim`` (int),
-    ``pcgan_z2_dim`` (int),
-    ``sample_points`` (bool),
-    ``G_pc`` (torch.nn.Module) if ``sample_points``
-
-
-    Args:
-        model_args: see above.
-        G (torch.nn.Module): generator module.
-        num_samples (int): # jets to generate.
-        num_particles (int): # particles per jet.
-        model (str): Choices listed in description. Defaults to "mpgan".
-        noise (Tensor): Can optionally pass in your own noise. Defaults to None.
-        labels (Tensor): Tensor of labels to condition on. Defaults to None.
-        noise_std (float): Standard deviation of the Gaussian noise. Defaults to 0.2.
-        **extra_args (type): extra args for generation
-
-    Returns:
-        Tensor: generated tensor of shape [num_samples, num_particles, num_features].
-
+    
+    [... rest of docstring ...]
     """
     device = next(G.parameters()).device
-
+    
     if labels is not None:
         assert labels.shape[0] == num_samples, "number of labels doesn't match num_samples"
         labels = labels.to(device)
-
+    
+    point_noise = None  # Initialize to avoid undefined variable issues
     if noise is None:
         noise, point_noise = get_gen_noise(
             model_args, num_samples, num_particles, model, device, noise_std
         )
     
-    # Hypergraph
-    # Replace the generator with the hypergraph-enabled version.
-    # (Set hyperedge_feature_dim and hyper_hidden_dim with actual numeric values, e.g. 10 and 32.)
-    G = MPGeneratorWithHypergraph(
-        hyperedge_feature_dim=10, 
-        hyper_hidden_dim=32, 
-        lfc=args.lfc, 
-        lfc_latent_size=args.lfc_latent_size, 
-        **model_train_args
-    )
-    ## gen_data = G(noise, labels)
+    if labels.dim() == 1:
+        labels = labels.unsqueeze(-1)
 
+    print(noise.device, labels.device)
+    # Generate data with the original generator first
+    gen_data = G(noise, labels)
+    
+    # Ensure gen_data is on the correct device
+    gen_data = gen_data.to(device)
+
+    # Uncomment and properly pass arguments if you actually want to use hypergraph
+    # # Hypergraph
+    # # Replace the generator with the hypergraph-enabled version.
+    # hypergraph_G = MPGeneratorWithHypergraph(
+    #     hyperedge_feature_dim=10,
+    #     hyper_hidden_dim=32,
+    #     lfc=model_args["lfc"],
+    #     lfc_latent_size=model_args["lfc_latent_size"],
+    #     **extra_args  # Use extra_args instead of undefined model_train_args
+    # )
+    # gen_data = hypergraph_G(noise, labels)
+    
     if "mask_manual" in extra_args and extra_args["mask_manual"]:
         # TODO: add pt_cutoff to extra_args
-        gen_data = mask_manual(model_args, gen_data, extra_args["pt_cutoff"])
-
+        if "pt_cutoff" in extra_args:
+            gen_data = mask_manual(model_args, gen_data, extra_args["pt_cutoff"])
+        else:
+            logging.warning("pt_cutoff not provided in extra_args for mask_manual")
+    
     if model == "pcgan" and model_args["sample_points"]:
         gen_data = model_args["G_pc"](gen_data.unsqueeze(1), point_noise)
-
+    
     logging.debug(gen_data[0, :10])
     return gen_data
 
+
+# def gen(
+#     model_args: dict,
+#     G: torch.nn.Module,
+#     num_samples: int,
+#     num_particles: int,
+#     model: str = "mpgan",
+#     noise: Tensor = None,
+#     labels: Tensor = None,
+#     noise_std: float = 0.2,
+#     **extra_args,
+# ) -> Tensor:
+#     """
+#     Generates ``num_samples`` jets in one go. Can optionally pass pre-specified ``noise``,
+#     else will randomly sample from a normal distribution.
+#
+#     Needs an dict ``model_args`` containing the following model-specific args.
+#
+#     mpgan:
+#     ``lfc`` (bool) use the latent fully connected layer (/ best football team in the world),
+#     ``lfc_latent_size`` (int) size of latent layer if ``lfc``,
+#     ``mask_learn_sep`` (bool) separate layer to learn masks,
+#     ``latent_node_size`` (int) size of each node's latent space, if not using lfc.
+#
+#     rgan, graphcnngan:
+#     ``latent_dim`` (int)
+#
+#     treegan:
+#     ``treegang_features`` (list)
+#
+#     pcgan:
+#     ``pcgan_latent_dim`` (int),
+#     ``pcgan_z2_dim`` (int),
+#     ``sample_points`` (bool),
+#     ``G_pc`` (torch.nn.Module) if ``sample_points``
+#
+#
+#     Args:
+#         model_args: see above.
+#         G (torch.nn.Module): generator module.
+#         num_samples (int): # jets to generate.
+#         num_particles (int): # particles per jet.
+#         model (str): Choices listed in description. Defaults to "mpgan".
+#         noise (Tensor): Can optionally pass in your own noise. Defaults to None.
+#         labels (Tensor): Tensor of labels to condition on. Defaults to None.
+#         noise_std (float): Standard deviation of the Gaussian noise. Defaults to 0.2.
+#         **extra_args (type): extra args for generation
+#
+#     Returns:
+#         Tensor: generated tensor of shape [num_samples, num_particles, num_features].
+#
+#     """
+#     device = next(G.parameters()).device
+#
+#     if labels is not None:
+#         assert labels.shape[0] == num_samples, "number of labels doesn't match num_samples"
+#         labels = labels.to(device)
+#
+#     if noise is None:
+#         noise, point_noise = get_gen_noise(
+#             model_args, num_samples, num_particles, model, device, noise_std
+#         )
+#     
+#     # Hypergraph
+#     # Replace the generator with the hypergraph-enabled version.
+#     # (Set hyperedge_feature_dim and hyper_hidden_dim with actual numeric values, e.g. 10 and 32.)
+#     G = MPGeneratorWithHypergraph(
+#         hyperedge_feature_dim=10, 
+#         hyper_hidden_dim=32, 
+#         lfc=model_args["lfc"], 
+#         lfc_latent_size=model_args["lfc_latent_size"], 
+#         **model_train_args
+#     )
+#     ## gen_data = G(noise, labels)
+#
+#     if "mask_manual" in extra_args and extra_args["mask_manual"]:
+#         # TODO: add pt_cutoff to extra_args
+#         gen_data = mask_manual(model_args, gen_data, extra_args["pt_cutoff"])
+#
+#     if model == "pcgan" and model_args["sample_points"]:
+#         gen_data = model_args["G_pc"](gen_data.unsqueeze(1), point_noise)
+#
+#     logging.debug(gen_data[0, :10])
+#     return gen_data
+#
 
 def optional_tqdm(iter_obj, use_tqdm, total=None, desc=None):
     if use_tqdm:
@@ -413,7 +501,8 @@ def calc_D_loss(
 
     returns individual loss contributions as well for evaluation and plotting
     """
-    device = data.device
+    
+    device = next(D.parameters()).device
 
     if loss == "og" or loss == "ls":
         if label_smoothing:
@@ -460,7 +549,6 @@ def calc_D_loss(
         },
     )
 
-
 def train_D(
     model_args,
     D,
@@ -482,9 +570,17 @@ def train_D(
     logging.debug("Training D")
     log = logging.info if print_output else logging.debug
 
+    # Get device from discriminator model
+    device = ensure_device_consistency([D, G], [D_optimizer, G_optimizer])
+    # device = next(D.parameters()).device
+    
     D.train()
     D_optimizer.zero_grad()
     G.eval()
+
+    # Move data to device
+    if hasattr(data, 'to'):
+        data = data.to(device)
 
     #Hypergraph
     run_batch_size = data.batch_size
@@ -495,27 +591,42 @@ def train_D(
     # Group node features by graph and pad/truncate to num_particles
     num_particles = 30  # Ensure this is defined in your args
     node_features, mask = to_dense_batch(data.x, batch=data.batch, max_num_nodes=num_particles)
+    
+    # Move node_features and labels to the correct device
+    node_features = node_features.to(device)
+    if labels is not None:
+        labels = labels.to(device)
+        # Add dimension to labels if needed
+        if labels.dim() == 1:
+            labels = labels.unsqueeze(-1)
+    
     D_real_output = D(node_features, labels)
-
-    # D_real_output = D(data.x.clone(), labels)
 
     log(f"D real output: \n {D_real_output[:10]}")
 
     if gen_data is None:
+        # DON'T add num_particles to extra_args
+        # Just pass it directly as an argument
         gen_data = gen(
             model_args,
             G,
             num_samples=run_batch_size,
+            # num_particles=num_particles,  # Pass this directly
             model=model,
             labels=labels,
             **gen_args,
             **extra_args,
         )
 
+    # Ensure gen_data is on the correct device
+    gen_data = gen_data.to(device)
+
     if augment_args is not None and augment_args.augment:
         p = augment_args.aug_prob if not augment_args.adaptive_prob else augment_args.augment_p[-1]
         data = augment.augment(augment_args, data, p)
         gen_data = augment.augment(augment_args, gen_data, p)
+        # Ensure augmented data is on the correct device
+        gen_data = gen_data.to(device)
 
     log(f"G output: \n {gen_data[:2, :10]}")
 
@@ -536,6 +647,179 @@ def train_D(
     D_loss.backward()
     D_optimizer.step()
     return D_loss_items
+
+
+# def train_D(
+#     model_args,
+#     D,
+#     G,
+#     D_optimizer,
+#     G_optimizer,
+#     data,
+#     loss,
+#     loss_args={},
+#     gen_args={},
+#     augment_args=None,
+#     gen_data=None,
+#     labels=None,
+#     model="mpgan",
+#     epoch=0,
+#     print_output=False,
+#     **extra_args,
+# ):
+#     logging.debug("Training D")
+#     log = logging.info if print_output else logging.debug
+#
+#     # Get device from discriminator model
+#     device = next(D.parameters()).device
+#     
+#     D.train()
+#     D_optimizer.zero_grad()
+#     G.eval()
+#
+#     #Hypergraph
+#     run_batch_size = data.batch_size
+#
+#     # run_batch_size = data.shape[0]
+#
+#     #Hypergraph
+#     # Group node features by graph and pad/truncate to num_particles
+#     num_particles = 30  # Ensure this is defined in your args
+#     node_features, mask = to_dense_batch(data.x, batch=data.batch, max_num_nodes=num_particles)
+#     
+#     # Move node_features and labels to the correct device
+#     node_features = node_features.to(device)
+#     if labels is not None:
+#         labels = labels.to(device)
+#         # Add dimension to labels if needed
+#         if labels.dim() == 1:
+#             labels = labels.unsqueeze(-1)
+#     
+#     D_real_output = D(node_features, labels)
+#
+#     # D_real_output = D(data.x.clone(), labels)
+#
+#     log(f"D real output: \n {D_real_output[:10]}")
+#
+#     if gen_data is None:
+#         # Add num_particles to gen_args
+#         extra_args.update({'num_particles': num_particles})
+#         gen_data = gen(
+#             model_args,
+#             G,
+#             num_samples=run_batch_size,
+#             num_particles=num_particles,  # Make sure num_particles is passed
+#             model=model,
+#             labels=labels,
+#             **gen_args,
+#             **extra_args,
+#         )
+#
+#     # Ensure gen_data is on the correct device
+#     gen_data = gen_data.to(device)
+#
+#     if augment_args is not None and augment_args.augment:
+#         p = augment_args.aug_prob if not augment_args.adaptive_prob else augment_args.augment_p[-1]
+#         data = augment.augment(augment_args, data, p)
+#         gen_data = augment.augment(augment_args, gen_data, p)
+#         # Ensure augmented data is on the correct device
+#         gen_data = gen_data.to(device)
+#
+#     log(f"G output: \n {gen_data[:2, :10]}")
+#
+#     D_fake_output = D(gen_data, labels)
+#     log(f"D fake output: \n {D_fake_output[:10]}")
+#
+#     D_loss, D_loss_items = calc_D_loss(
+#         loss,
+#         D,
+#         data,
+#         gen_data,
+#         D_real_output,
+#         D_fake_output,
+#         run_batch_size,
+#         model=model,
+#         **loss_args,
+#     )
+#     D_loss.backward()
+#     D_optimizer.step()
+#     return D_loss_items
+#
+# def train_D(
+#     model_args,
+#     D,
+#     G,
+#     D_optimizer,
+#     G_optimizer,
+#     data,
+#     loss,
+#     loss_args={},
+#     gen_args={},
+#     augment_args=None,
+#     gen_data=None,
+#     labels=None,
+#     model="mpgan",
+#     epoch=0,
+#     print_output=False,
+#     **extra_args,
+# ):
+#     logging.debug("Training D")
+#     log = logging.info if print_output else logging.debug
+#
+#     D.train()
+#     D_optimizer.zero_grad()
+#     G.eval()
+#
+#     #Hypergraph
+#     run_batch_size = data.batch_size
+#
+#     # run_batch_size = data.shape[0]
+#
+#     #Hypergraph
+#     # Group node features by graph and pad/truncate to num_particles
+#     num_particles = 30  # Ensure this is defined in your args
+#     node_features, mask = to_dense_batch(data.x, batch=data.batch, max_num_nodes=num_particles)
+#     D_real_output = D(node_features, labels)
+#
+#     # D_real_output = D(data.x.clone(), labels)
+#
+#     log(f"D real output: \n {D_real_output[:10]}")
+#
+#     if gen_data is None:
+#         gen_data = gen(
+#             model_args,
+#             G,
+#             num_samples=run_batch_size,
+#             model=model,
+#             labels=labels,
+#             **gen_args,
+#             **extra_args,
+#         )
+#
+#     if augment_args is not None and augment_args.augment:
+#         p = augment_args.aug_prob if not augment_args.adaptive_prob else augment_args.augment_p[-1]
+#         data = augment.augment(augment_args, data, p)
+#         gen_data = augment.augment(augment_args, gen_data, p)
+#
+#     log(f"G output: \n {gen_data[:2, :10]}")
+#
+#     D_fake_output = D(gen_data, labels)
+#     log(f"D fake output: \n {D_fake_output[:10]}")
+#
+#     D_loss, D_loss_items = calc_D_loss(
+#         loss,
+#         D,
+#         data,
+#         gen_data,
+#         D_real_output,
+#         D_fake_output,
+#         run_batch_size,
+#         model=model,
+#         **loss_args,
+#     )
+#     D_loss.backward()
+#     D_optimizer.step()
+#     return D_loss_items
 
 
 def calc_G_loss(loss, fake_outputs):
@@ -569,23 +853,46 @@ def train_G(
     logging.debug("gtrain")
     G.train()
     G_optimizer.zero_grad()
+    
+    # Get device from the generator model
+    # device = next(G.parameters()).device
+    # Ensure device consistency
+    device = ensure_device_consistency([D, G], [G_optimizer])
+    
+    # Process labels if they exist
+    if labels is not None:
+        run_batch_size = labels.shape[0]
+        labels = labels.to(device)
+        if labels.dim() == 1:
+            labels = labels.unsqueeze(-1)
+    else:
+        run_batch_size = batch_size
 
-    run_batch_size = labels.shape[0] if labels is not None else batch_size
-
+    # Ensure num_particles is passed
+    num_particles = 30  # Make sure this matches what's used in train_D
+    
     gen_data = gen(
         model_args,
         G,
         num_samples=run_batch_size,
+        # num_particles=num_particles,  # Add this parameter
         model=model,
         labels=labels,
         **gen_args,
         **extra_args,
     )
+    
+    # Ensure gen_data is on the correct device
+    gen_data = gen_data.to(device)
 
     if augment_args is not None and augment_args.augment:
         p = augment_args.aug_prob if not augment_args.adaptive_prob else augment_args.augment_p[-1]
         gen_data = augment.augment(augment_args, gen_data, p)
+        # Ensure augmented data is on the correct device
+        gen_data = gen_data.to(device)
 
+    # Make sure D is also aware of the device
+    D.to(device)
     D_fake_output = D(gen_data, labels)
 
     logging.debug("D fake output:")
@@ -597,6 +904,52 @@ def train_G(
     G_optimizer.step()
 
     return G_loss.item()
+
+# def train_G(
+#     model_args,
+#     D,
+#     G,
+#     G_optimizer,
+#     loss,
+#     batch_size,
+#     gen_args={},
+#     augment_args=None,
+#     labels=None,
+#     model="mpgan",
+#     epoch=0,
+#     **extra_args,
+# ):
+#     logging.debug("gtrain")
+#     G.train()
+#     G_optimizer.zero_grad()
+#
+#     run_batch_size = labels.shape[0] if labels is not None else batch_size
+#
+#     gen_data = gen(
+#         model_args,
+#         G,
+#         num_samples=run_batch_size,
+#         model=model,
+#         labels=labels,
+#         **gen_args,
+#         **extra_args,
+#     )
+#
+#     if augment_args is not None and augment_args.augment:
+#         p = augment_args.aug_prob if not augment_args.adaptive_prob else augment_args.augment_p[-1]
+#         gen_data = augment.augment(augment_args, gen_data, p)
+#
+#     D_fake_output = D(gen_data, labels)
+#
+#     logging.debug("D fake output:")
+#     logging.debug(D_fake_output[:10])
+#
+#     G_loss = calc_G_loss(loss, D_fake_output)
+#
+#     G_loss.backward()
+#     G_optimizer.step()
+#
+#     return G_loss.item()
 
 
 def save_models(D, G, D_optimizer, G_optimizer, models_path, epoch, multi_gpu=False):
@@ -777,6 +1130,8 @@ def eval_save_plot(
     save_models(D, G, D_optimizer, G_optimizer, args.models_path, epoch, multi_gpu=args.multi_gpu)
 
     use_mask = args.mask_c or args.clabels or args.gapt_mask
+
+    print(X_test)
 
     real_jets = jetnet.utils.gen_jet_corrections(
         X_test.particle_normalisation(X_test.particle_data[: args.eval_tot_samples], inverse=True),
@@ -971,10 +1326,11 @@ def train_loop(
             for key in D_losses:
                 epoch_loss[key] += d_loss_items[key]
 
+        print(epoch_loss)
         if args.num_critic == 1 or (batch_ndx - 1) % args.num_critic == 0:
 
             #hypergraph
-            epoch_loss["g"] += train_G(
+            epoch_loss["G"] += train_G(
             model_train_args,
             D,
             G,
