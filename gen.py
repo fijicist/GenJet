@@ -6,6 +6,7 @@ import numpy as np
 from setup_training import models, get_model_args
 from train import gen_multi_batch
 
+from utils import OneHotEncodeType
 
 feature_maxes = {
     "g": [1.4532885551452637, 0.520724892616272, 0.8537549376487732, 1.0],
@@ -100,11 +101,52 @@ def main():
     if G_args.mask_c:
         from jetnet.datasets import JetNet
 
-        labels = JetNet(G_args.jets, data_dir=args.datasets_path, train=False).jet_features
+        ####
+        # _, labels = JetNet(G_args.jets, data_dir=args.datasets_path, download=True)[:]
+        # # print(labels[:, 0].reshape(-1, 1))
+        # # exit()
+        # labels = labels[:, 0].reshape(-1, 1)
+        #
+        # rng = np.random.default_rng()
+        # rand = rng.choice(len(labels), size=args.num_samples)
+        # labels = labels[rand].to(args.device)
+        # print(labels, labels.size)
+        #####
 
+        # Load the dataset
+        _, jetnet_dataset = JetNet(G_args.jets, data_dir=args.datasets_path)[:]
+
+        labels = jetnet_dataset[:, :]
         rng = np.random.default_rng()
         rand = rng.choice(len(labels), size=args.num_samples)
-        labels = labels[rand].to(args.device)
+        labels = torch.from_numpy(np.array(labels))[rand].to(args.device)
+
+        # data_args_jetnet = {
+        #     "jet_type": ["q", "g"],  # gluon and light quark jets
+        #     "data_dir": "datasets/jetnet",
+        #     # these are the default particle features, written here to be explicit
+        #     "particle_features": ["ptrel", "etarel", "phirel", "mask"],
+        #     "num_particles": 30,  # we retain only the 30 highest pT particles for this demo
+        #     "jet_features": ["type", "pt", "eta", "mass"],
+        #     # "particle_normalisation": FeaturewiseLinear(
+        #     #     normal=True, normalise_features=[False, False, False]
+        #     # ),
+        #     # pass our function as a transform to be applied to the jet features
+        #     # "jet_transform": OneHotEncodeType,
+        #     "download": True,
+        # }
+        #
+        # _, labels = JetNet(**data_args_jetnet)[:100000]
+        # labels = labels.numpy()
+        #
+        # labels = OneHotEncodeType(labels)[:, :1]
+        #
+        # print(labels,labels.size, len(labels))
+        #
+        # rng = np.random.default_rng()
+        # rand = rng.choice(len(labels), size=args.num_samples)
+        # labels = labels[rand].to(args.device)
+        # labels = torch.tensor(labels[rand]).to(args.device)
     else:
         labels = None
 

@@ -50,10 +50,10 @@ def main():
         "data_dir": args.datasets_path,
         "num_particles": args.num_hits,
         "particle_features": (
-            JetNet.all_particle_features if args.mask else JetNet.all_particle_features[:-1]
+            ["ptrel", "etarel", "phirel", "mask"] if args.mask else ["ptrel", "etarel", "phirel"]
         ),
         "jet_features": (
-            "num_particles" if (args.clabels or args.mask_c or args.gapt_mask) else None
+            ["type", "pt", "eta", "mass", "num_particles"] if (args.clabels or args.mask_c or args.gapt_mask) else None
         ),
         "particle_normalisation": particle_norm,
         "jet_normalisation": jet_norm,
@@ -564,7 +564,6 @@ def evaluate(
             exclude_zeros=True,
             num_eval_samples=num_w1_eval_samples,
             num_batches=real_jets.shape[0] // num_w1_eval_samples,
-            average_over_features=False,
             return_std=True,
         )
         losses["w1p"].append(np.concatenate((w1pm, w1pstd)))
@@ -660,9 +659,13 @@ def make_plots(
 
     if len(losses["G"]) > 1:
         plotting.plot_losses(losses, loss=loss, name=name, losses_path=losses_path, show=False)
+        
+        # New separate subplots for generator and discriminator
+        plotting.plot_losses_separate(losses, loss=loss, name=name, losses_path=losses_path, show=False)
 
         try:
             remove(losses_path + "/" + str(epoch - save_epochs) + ".pdf")
+            remove(losses_path + "/" + str(epoch - save_epochs) + "_separate.pdf")
         except:
             logging.info("Couldn't remove previous loss curves")
 

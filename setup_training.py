@@ -420,6 +420,18 @@ def parse_mpgan_args(parser):
         help="cartesian, polarrel or polarrelabspt",
         choices=["cartesian, polarrel, polarrelabspt"],
     )
+    
+    # L-GATr specific arguments
+    add_bool_arg(parser, "use-lgattr", "use Lorentz Group Attentive Transformer for generator", default=False)
+    parser.add_argument(
+        "--hidden-mv-channels", type=int, default=16, help="number of hidden multivector channels for L-GATr"
+    )
+    parser.add_argument(
+        "--hidden-s-channels", type=int, default=32, help="number of hidden scalar channels for L-GATr"
+    )
+    parser.add_argument(
+        "--num-blocks", type=int, default=2, help="number of transformer blocks per L-GATr layer"
+    )
 
     parser.add_argument(
         "--norm", type=float, default=1, help="normalizing max value of features to this value"
@@ -832,7 +844,7 @@ def process_optimization_args(args):
                             args.batch_size = 100
                         else:
                             args.batch_size = 32
-
+    
         elif args.model == "gapt" or args.model_D == "gapt":
             if args.dataset == "jets":
                 args.batch_size = 512
@@ -1350,8 +1362,51 @@ def setup_gapt(args, gen):
 def models(args, gen_only=False):
     """Set up generator and discriminator models, either new or loaded from a state dict"""
     if args.model == "mpgan":
-        G = setup_mpgan(args, gen=True)
-        logging.info(G)
+        if hasattr(args, 'use_lgattr') and args.use_lgattr:
+            # Import L-gatr generator
+            from mpgan.model import LgatrGenerator
+            
+            # Create L-gatr generator with same arguments as MPGenerator
+            G = LgatrGenerator(
+                hidden_mv_channels=args.hidden_mv_channels,
+                hidden_s_channels=args.hidden_s_channels,
+                num_blocks=args.num_blocks,
+                num_particles=args.num_hits,
+                input_node_size=args.latent_node_size if args.latent_node_size else args.hidden_node_size,
+                output_node_size=args.node_feat_size,
+                hidden_node_size=args.hidden_node_size,
+                mp_iters=args.mp_iters_gen,
+                final_activation="tanh" if args.gtanh else "",
+                lfc=args.lfc,
+                lfc_latent_size=args.lfc_latent_size,
+                linear_args={
+                    "leaky_relu_alpha": args.leaky_relu_alpha,
+                    "dropout_p": args.gen_dropout,
+                    "batch_norm": args.batch_norm_gen,
+                    "spectral_norm": args.spectral_norm_gen,
+                },
+                mask_args={
+                    "mask_feat": args.mask_feat,
+                    "mask_feat_bin": args.mask_feat_bin,
+                    "mask_weights": args.mask_weights,
+                    "mask_manual": args.mask_manual,
+                    "mask_exp": args.mask_exp,
+                    "mask_real_only": args.mask_real_only,
+                    "mask_learn": args.mask_learn,
+                    "mask_learn_bin": args.mask_learn_bin,
+                    "mask_learn_sep": args.mask_learn_sep,
+                    "fmg": args.fmg,
+                    "mask_disc_sep": args.mask_disc_sep,
+                    "mask_fnd_np": args.mask_fnd_np,
+                    "mask_c": args.mask_c,
+                    "mask_fne_np": args.mask_fne_np,
+                }
+            )
+            logging.info("Using L-GATr Generator")
+            logging.info(G)
+        else:
+            G = setup_mpgan(args, gen=True)
+            logging.info(G)
     elif args.model == "gapt":
         G = setup_gapt(args, gen=True)
         logging.info(G)
@@ -1480,6 +1535,16 @@ def get_model_args(args):
                 args.latent_node_size if args.latent_node_size else args.hidden_node_size
             ),
         }
+        
+        # Add L-gatr specific parameters if enabled
+        if hasattr(args, 'use_lgattr') and args.use_lgattr:
+            model_args.update({
+                "use_lgattr": args.use_lgattr,
+                "hidden_mv_channels": args.hidden_mv_channels,
+                "hidden_s_channels": args.hidden_s_channels,
+                "num_blocks": args.num_blocks,
+            })
+            
     elif args.model == "gapt":
         model_args = {"embed_dim": args.gapt_embed_dim}
     elif args.model == "rgan" or args.model == "graphcnngan":

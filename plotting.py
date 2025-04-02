@@ -366,6 +366,48 @@ def plot_losses(losses, loss="lg", name=None, losses_path=None, show=False):
         plt.show()
     else:
         plt.close()
+        
+def plot_losses_separate(losses, loss="lg", name=None, losses_path=None, show=False):
+    """Plot loss curves on separate subplots for discriminator and generator"""
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12), sharex=True)
+    
+    # Discriminator losses
+    if loss == "og" or loss == "ls":
+        ax1.plot(losses["Dr"], label="Discriminator real loss")
+        ax1.plot(losses["Df"], label="Discriminator fake loss")
+        ax1.plot(losses["D"], label="Total discriminator loss", linestyle='--')
+    elif loss == "w":
+        ax1.plot(losses["D"], label="Critic loss")
+    elif loss == "hinge":
+        ax1.plot(losses["Dr"], label="Discriminator real loss")
+        ax1.plot(losses["Df"], label="Discriminator fake loss")
+        ax1.plot(losses["D"], label="Total discriminator loss", linestyle='--')
+
+    if "gp" in losses:
+        ax1.plot(losses["gp"], label="Gradient penalty")
+    
+    ax1.set_ylabel("Loss")
+    ax1.set_title("Discriminator Losses")
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    
+    # Generator losses
+    ax2.plot(losses["G"], label="Generator loss", color='green')
+    ax2.set_xlabel("Epoch")
+    ax2.set_ylabel("Loss")
+    ax2.set_title("Generator Losses")
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    
+    if losses_path is not None and name is not None:
+        plt.savefig(f"{losses_path}/{name}_separate.pdf", bbox_inches="tight")
+
+    if show:
+        plt.show()
+    else:
+        plt.close()
 
 
 def plot_eval(
