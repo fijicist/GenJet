@@ -827,6 +827,15 @@ class LgatrLayer(nn.Module):
             x_masked = x * mask
         else:
             x_masked = x
+            
+        # Check if input dimensions match what's expected
+        actual_input_size = x_masked.size(-1)
+        if hasattr(self, 'input_projection') and isinstance(self.input_projection, nn.Linear):
+            expected_input_size = self.input_projection.weight.size(1)
+        
+            # If mismatch, recreate the projection layer
+            if actual_input_size != expected_input_size:
+                self.input_projection = nn.Linear(actual_input_size, 4).to(x.device)
         
         # Project and embed
         x_projected = self.input_projection(x_masked)
@@ -868,148 +877,6 @@ class LgatrLayer(nn.Module):
             output = output * mask
             
         return output
-
-# class LgatrLayer(nn.Module):
-#     """
-#     Lorentz Group Attentive Transformer layer compatible with MPGAN architecture.
-#     
-#     Args:
-#         input_node_size (int): Input node feature size
-#         output_node_size (int): Output node feature size
-#         hidden_mv_channels (int): Number of hidden multivector channels
-#         hidden_s_channels (int): Number of hidden scalar channels
-#         num_blocks (int): Number of transformer blocks
-#         clabels (int): Number of conditioning labels
-#         mask_fne_np (bool): Use number of particles per jet as conditional label
-#     """
-#     
-#     def __init__(
-#         self,
-#         input_node_size: int,
-#         output_node_size: int,
-#         hidden_mv_channels: int = 16,
-#         hidden_s_channels: int = 32,
-#         num_blocks: int = 2,
-#         clabels: int = 0,
-#         mask_fne_np: bool = False,
-#         **kwargs
-#     ):
-#         super(LgatrLayer, self).__init__()
-#         
-#         self.input_node_size = input_node_size
-#         self.output_node_size = output_node_size
-#         self.clabels = clabels
-#         self.mask_fne_np = mask_fne_np
-#         
-#         # Define the GATr model
-#         self.gatr = GATr(
-#             in_mv_channels=3,  # Input vector + spurions
-#             out_mv_channels=output_node_size,
-#             hidden_mv_channels=hidden_mv_channels,
-#             in_s_channels=clabels + mask_fne_np if (clabels or mask_fne_np) else None,
-#             out_s_channels=None,
-#             hidden_s_channels=hidden_s_channels,
-#             num_blocks=num_blocks,
-#             attention=SelfAttentionConfig(),
-#             mlp=MLPConfig(),
-#         )
-#         
-#         # Input projection if needed
-#         if input_node_size != 4:
-#             self.input_projection = nn.Linear(input_node_size, 4)
-#         else:
-#             self.input_projection = nn.Identity()
-#     
-#     def forward(
-#         self,
-#         x: Tensor,
-#         use_mask: bool = False,
-#         mask: Tensor = None,
-#         labels: Tensor = None,
-#         num_jet_particles: Tensor = None,
-#     ) -> Tensor:
-#         """
-#         Forward pass of the L-gatr layer, maintaining the same interface as MPLayer.
-#         
-#         Args:
-#             x (Tensor): Input tensor of shape [batch_size, num_nodes, input_node_size]
-#             use_mask (bool): Whether to use masking for valid particles
-#             mask (Tensor): Mask tensor of shape [batch_size, num_nodes, 1]
-#             labels (Tensor): Conditioning labels of shape [batch_size, num_labels]
-#             num_jet_particles (Tensor): Number of particles per jet of shape [batch_size, 1]
-#             
-#         Returns:
-#             Tensor: Output tensor of shape [batch_size, num_nodes, output_node_size]
-#         """
-#         batch_size, num_nodes = x.size(0), x.size(1)
-#         
-#         # Check that required inputs are provided
-#         assert not (use_mask and mask is None), "need ``mask`` tensor if using ``use_mask`` option"
-#         assert not (
-#             self.clabels and labels is None
-#         ), "need ``labels`` tensor if using ``clabels`` option"
-#         assert not (
-#             self.mask_fne_np and num_jet_particles is None
-#         ), "need ``num_jet_particles`` tensor if using ``mask_fne_np`` option"
-#         
-#         # Project input to 4D if needed
-#         x_projected = self.input_projection(x)
-#         
-#         # Embed fourmomentum point cloud inputs in GA
-#         multivectors = embed_vector(x_projected).unsqueeze(-2)  # (batch_size, num_nodes, 1, 16)
-#         
-#         # Append spurions for symmetry breaking
-#         spurions = embed_spurions(
-#             beam_reference="xyplane",
-#             add_time_reference=True,
-#             device=x.device,
-#             dtype=x.dtype
-#         )  # (2, 16)
-#         spurions = spurions[None, None, ...].repeat(batch_size, num_nodes, 1, 1)  # (batch_size, num_nodes, 2, 16)
-#         multivectors = torch.cat((multivectors, spurions), dim=-2)  # (batch_size, num_nodes, 3, 16)
-#         
-#         # Prepare scalar inputs (conditioning labels and/or number of particles)
-#         scalars = None
-#         if self.clabels or self.mask_fne_np:
-#             scalar_list = []
-#             if self.clabels:
-#                 # Repeat labels for each node
-#                 scalar_list.append(labels[:, :self.clabels].unsqueeze(1).repeat(1, num_nodes, 1))
-#             if self.mask_fne_np:
-#                 # Repeat number of particles for each node
-#                 scalar_list.append(num_jet_particles.unsqueeze(1).repeat(1, num_nodes, 1))
-#             
-#             scalars = torch.cat(scalar_list, dim=2)
-#         
-#         # Apply masking if needed
-#         if use_mask:
-#             # Create attention mask from particle mask - we'll use the mask to zero out invalid particles
-#             multivectors = multivectors * mask.unsqueeze(-1).unsqueeze(-1)
-#             if scalars is not None:
-#                 scalars = scalars * mask
-#         
-#         # Pass through L-GATr
-#         multivector_output, _ = self.gatr(multivectors, scalars)
-#         
-#         # Extract the output in the correct shape
-#         output = multivector_output.squeeze(-2)  # Remove the channel dimension
-#         
-#         # Reshape to match the expected output format
-#         # We need to convert from the geometric algebra representation back to a vector
-#         if self.output_node_size == 4:
-#             # If output size is 4, we extract the vector part directly
-#             output = extract_scalar(output).reshape(batch_size, num_nodes, self.output_node_size)
-#         else:
-#             # Otherwise, we use a learned projection
-#             output = output.reshape(batch_size, num_nodes, -1)
-#             # Apply a linear projection to get the desired output size
-#             output = nn.Linear(output.size(-1), self.output_node_size)(output)
-#         
-#         # Apply masking if needed
-#         if use_mask:
-#             output = output * mask
-#         
-#         return output
 
 class LgatrGenerator(MPGenerator):
     """
@@ -1327,3 +1194,107 @@ class MPDiscriminator(MPNet):
     def __repr__(self):
         dea_str = f",\nFND = {self.fnd_layer}" if self.dea else ""
         return f"{self.__class__.__name__}(MPLayers = {self.mp_layers}{dea_str})"
+        
+
+class LgatrDiscriminator(MPDiscriminator):
+    """
+    Discriminator using Lorentz Group Attentive Transformer layers.
+    
+    Args:
+        hidden_mv_channels (int): Number of hidden multivector channels
+        hidden_s_channels (int): Number of hidden scalar channels
+        num_blocks (int): Number of transformer blocks per layer
+        **mpdisc_args: Arguments for MPDiscriminator base class
+    """
+    
+    def __init__(
+        self,
+        hidden_mv_channels: int = 16,
+        hidden_s_channels: int = 32,
+        num_blocks: int = 2,
+        **mpdisc_args
+    ):
+        # Initialize with parent class but don't create MPLayers yet
+        nn.Module.__init__(self)
+        
+        # Copy necessary attributes from MPDiscriminator
+        self.num_particles = mpdisc_args.get('num_particles')
+        self.input_node_size = mpdisc_args.get('input_node_size')
+        self.mp_iters = mpdisc_args.get('mp_iters', 2)
+        self.hidden_node_size = mpdisc_args.get('hidden_node_size', 32)
+        self.final_activation = mpdisc_args.get('final_activation', '')
+        self.linear_args = mpdisc_args.get('linear_args', {})
+        self.mask_args = mpdisc_args.get('mask_args', {})
+        
+        # Discriminator-specific attributes
+        self.dea = mpdisc_args.get('dea', True)
+        self.dea_sum = mpdisc_args.get('sum', True)
+        self.mask_fnd_np = mpdisc_args.get('mask_fnd_np', False)
+        self.output_node_size = 1 if not self.dea else 0
+        
+        # L-GATr specific parameters
+        self.hidden_mv_channels = hidden_mv_channels
+        self.hidden_s_channels = hidden_s_channels
+        self.num_blocks = num_blocks
+        
+        # Create L-GATr layers
+        self.mp_layers = nn.ModuleList()
+        
+        # First layer
+        self.mp_layers.append(
+            LgatrLayer(
+                input_node_size=self.input_node_size,
+                output_node_size=self.hidden_node_size,
+                hidden_mv_channels=hidden_mv_channels,
+                hidden_s_channels=hidden_s_channels,
+                num_blocks=num_blocks,
+                clabels=self.mask_args.get('clabels', 0),
+                mask_fne_np=self.mask_args.get('mask_fne_np', False)
+            )
+        )
+        
+        # Intermediate layers
+        for i in range(self.mp_iters - 2):
+            self.mp_layers.append(
+                LgatrLayer(
+                    input_node_size=self.hidden_node_size,
+                    output_node_size=self.hidden_node_size,
+                    hidden_mv_channels=hidden_mv_channels,
+                    hidden_s_channels=hidden_s_channels,
+                    num_blocks=num_blocks,
+                    clabels=self.mask_args.get('clabels', 0),
+                    mask_fne_np=self.mask_args.get('mask_fne_np', False)
+                )
+            )
+        
+        # Final layer
+        self.mp_layers.append(
+            LgatrLayer(
+                input_node_size=self.hidden_node_size,
+                output_node_size=self.output_node_size if self.output_node_size > 0 else self.hidden_node_size,
+                hidden_mv_channels=hidden_mv_channels,
+                hidden_s_channels=hidden_s_channels,
+                num_blocks=num_blocks,
+                clabels=self.mask_args.get('clabels', 0),
+                mask_fne_np=self.mask_args.get('mask_fne_np', False)
+            )
+        )
+        
+        # Initialize final fully connected layer if using DEA
+        if self.dea:
+            fnd = mpdisc_args.get('fnd', [])
+            self.fnd_layer = LinearNet(
+                fnd,
+                input_size=self.hidden_node_size + int(self.mask_fnd_np),
+                output_size=1,
+                final_linear=True,
+                **self.linear_args,
+            )
+    
+    # Inherit these methods from MPDiscriminator
+    _post_mp = MPDiscriminator._post_mp
+    _get_mask = MPDiscriminator._get_mask
+    
+    def __repr__(self):
+        dea_str = f",\nFND = {self.fnd_layer}" if self.dea else ""
+        return f"{self.__class__.__name__}(L-GATr with {self.num_blocks} blocks, {self.hidden_mv_channels} MV channels, {self.hidden_s_channels} S channels{dea_str})"

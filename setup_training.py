@@ -421,20 +421,28 @@ def parse_mpgan_args(parser):
         choices=["cartesian, polarrel, polarrelabspt"],
     )
     
-    # L-GATr specific arguments
-    add_bool_arg(parser, "use-lgattr", "use Lorentz Group Attentive Transformer for generator", default=False)
+    # Generator L-GATr parameters
+    add_bool_arg(parser, "use-lgattr-gen", "use Lorentz Group Attentive Transformer for generator", default=False)
     parser.add_argument(
-        "--hidden-mv-channels", type=int, default=16, help="number of hidden multivector channels for L-GATr"
+        "--hidden-mv-channels-gen", type=int, default=16, help="number of hidden multivector channels for L-GATr generator"
     )
     parser.add_argument(
-        "--hidden-s-channels", type=int, default=32, help="number of hidden scalar channels for L-GATr"
+        "--hidden-s-channels-gen", type=int, default=32, help="number of hidden scalar channels for L-GATr generator"
     )
     parser.add_argument(
-        "--num-blocks", type=int, default=2, help="number of transformer blocks per L-GATr layer"
+        "--num-blocks-gen", type=int, default=2, help="number of transformer blocks per L-GATr layer in generator"
     )
 
+    # Discriminator L-GATr parameters
+    add_bool_arg(parser, "use-lgattr-disc", "use Lorentz Group Attentive Transformer for discriminator", default=False)
     parser.add_argument(
-        "--norm", type=float, default=1, help="normalizing max value of features to this value"
+        "--hidden-mv-channels-disc", type=int, default=16, help="number of hidden multivector channels for L-GATr discriminator"
+    )
+    parser.add_argument(
+        "--hidden-s-channels-disc", type=int, default=32, help="number of hidden scalar channels for L-GATr discriminator"
+    )
+    parser.add_argument(
+        "--num-blocks-disc", type=int, default=2, help="number of transformer blocks per L-GATr layer in discriminator"
     )
 
     parser.add_argument("--sd", type=float, default=0.2, help="standard deviation of noise")
@@ -1362,15 +1370,15 @@ def setup_gapt(args, gen):
 def models(args, gen_only=False):
     """Set up generator and discriminator models, either new or loaded from a state dict"""
     if args.model == "mpgan":
-        if hasattr(args, 'use_lgattr') and args.use_lgattr:
+        if hasattr(args, 'use_lgattr_gen') and args.use_lgattr_gen:
             # Import L-gatr generator
             from mpgan.model import LgatrGenerator
             
             # Create L-gatr generator with same arguments as MPGenerator
             G = LgatrGenerator(
-                hidden_mv_channels=args.hidden_mv_channels,
-                hidden_s_channels=args.hidden_s_channels,
-                num_blocks=args.num_blocks,
+                hidden_mv_channels=args.hidden_mv_channels_gen,
+                hidden_s_channels=args.hidden_s_channels_gen,
+                num_blocks=args.num_blocks_gen,
                 num_particles=args.num_hits,
                 input_node_size=args.latent_node_size if args.latent_node_size else args.hidden_node_size,
                 output_node_size=args.node_feat_size,
@@ -1436,8 +1444,41 @@ def models(args, gen_only=False):
         return G
 
     if args.model_D == "mpgan":
-        D = setup_mpgan(args, gen=False)
-        logging.info(D)
+        if hasattr(args, 'use_lgattr_disc') and args.use_lgattr_disc:
+            # Import L-gatr discriminator
+            from mpgan.model import LgatrDiscriminator
+            
+            # Create L-gatr discriminator with specified parameters
+            D = LgatrDiscriminator(
+                hidden_mv_channels=args.hidden_mv_channels_disc,
+                hidden_s_channels=args.hidden_s_channels_disc,
+                num_blocks=args.num_blocks_disc,
+                dea=args.dea,
+                dea_sum=args.sum,
+                fnd=args.fnd,
+                mask_fnd_np=args.mask_fnd_np,
+                num_particles=args.num_hits,
+                input_node_size=args.node_feat_size if not args.mask else args.node_feat_size - 1,
+                hidden_node_size=args.hidden_node_size,
+                mp_iters=args.mp_iters_disc,
+                linear_args={
+                    "leaky_relu_alpha": args.leaky_relu_alpha,
+                    "dropout_p": args.disc_dropout,
+                    "batch_norm": args.batch_norm_disc,
+                    "spectral_norm": args.spectral_norm_disc,
+                },
+                mask_args={
+                    "mask_c": args.mask_c,
+                    "mask_fne_np": args.mask_fne_np,
+                    "mask_fnd_np": args.mask_fnd_np,
+                    "clabels": args.clabels,
+                },
+            )
+            logging.info("Using L-GATr Discriminator")
+            logging.info(D)
+        else:
+            D = setup_mpgan(args, gen=False)
+            logging.info(D)
     elif args.model_D == "gapt":
         D = setup_gapt(args, gen=False)
         logging.info(D)
@@ -1536,13 +1577,22 @@ def get_model_args(args):
             ),
         }
         
-        # Add L-gatr specific parameters if enabled
-        if hasattr(args, 'use_lgattr') and args.use_lgattr:
+        # Add L-gatr generator specific parameters if enabled
+        if hasattr(args, 'use_lgattr_gen') and args.use_lgattr_gen:
             model_args.update({
-                "use_lgattr": args.use_lgattr,
-                "hidden_mv_channels": args.hidden_mv_channels,
-                "hidden_s_channels": args.hidden_s_channels,
-                "num_blocks": args.num_blocks,
+                "use_lgattr_gen": args.use_lgattr_gen,
+                "hidden_mv_channels_gen": args.hidden_mv_channels_gen,
+                "hidden_s_channels_gen": args.hidden_s_channels_gen,
+                "num_blocks_gen": args.num_blocks_gen,
+            })
+            
+        # Add L-gatr discriminator specific parameters if enabled
+        if hasattr(args, 'use_lgattr_disc') and args.use_lgattr_disc:
+            model_args.update({
+                "use_lgattr_disc": args.use_lgattr_disc,
+                "hidden_mv_channels_disc": args.hidden_mv_channels_disc,
+                "hidden_s_channels_disc": args.hidden_s_channels_disc,
+                "num_blocks_disc": args.num_blocks_disc,
             })
             
     elif args.model == "gapt":

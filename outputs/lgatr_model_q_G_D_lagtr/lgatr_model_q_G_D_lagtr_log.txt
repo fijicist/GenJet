@@ -1,0 +1,704 @@
+03/04 18:02:00 Args initalized
+03/04 18:02:02 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 18:03:18 Args initalized
+03/04 18:03:21 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 18:04:57 Args initalized
+03/04 18:04:59 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 18:04:59 Using L-GATr Generator
+03/04 18:04:59 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 18:06:39 Args initalized
+03/04 18:06:43 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 18:06:43 Using L-GATr Generator
+03/04 18:06:43 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 18:14:49 Args initalized
+03/04 18:14:51 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 18:14:52 Using L-GATr Generator
+03/04 18:14:52 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 18:14:52 Using L-GATr Discriminator
+03/04 18:14:52 LgatrDiscriminator(L-GATr with 4 blocks, 16 MV channels, 32 S channels,
+FND = LinearNet(net = ModuleList(
+  (0): Linear(in_features=32, out_features=1, bias=True)
+)))
+03/04 18:14:52 Models loaded
+03/04 18:14:52 Optimizers loaded
+03/04 18:14:52 Epoch 1 starting
+03/04 19:26:32 Args initalized
+03/04 19:26:35 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 19:26:35 Using L-GATr Generator
+03/04 19:26:35 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 19:26:35 Using L-GATr Discriminator
+03/04 19:26:35 LgatrDiscriminator(L-GATr with 4 blocks, 16 MV channels, 32 S channels,
+FND = LinearNet(net = ModuleList(
+  (0): Linear(in_features=32, out_features=1, bias=True)
+)))
+03/04 19:26:35 Models loaded
+03/04 19:26:35 Optimizers loaded
+03/04 19:26:35 Epoch 1 starting

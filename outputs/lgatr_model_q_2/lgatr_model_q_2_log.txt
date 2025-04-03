@@ -1,0 +1,2666 @@
+03/04 04:16:34 Args initalized
+03/04 04:16:37 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 04:16:38 Using L-GATr Generator
+03/04 04:16:38 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=64, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=128, bias=True)
+                (s2s): Linear(in_features=64, out_features=128, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+              (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+              (s2s): Linear(in_features=128, out_features=64, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                  (mvs2s): Linear(in_features=128, out_features=128, bias=True)
+                  (s2s): Linear(in_features=64, out_features=128, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+                (s2s): Linear(in_features=128, out_features=64, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=64, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=64, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=128, bias=True)
+                (s2s): Linear(in_features=64, out_features=128, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+              (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+              (s2s): Linear(in_features=128, out_features=64, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                  (mvs2s): Linear(in_features=128, out_features=128, bias=True)
+                  (s2s): Linear(in_features=64, out_features=128, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+                (s2s): Linear(in_features=128, out_features=64, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=64, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 04:16:38 MPDiscriminator(MPLayers = ModuleList(
+  (0): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=6, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=195, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+  (1): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=64, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=224, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+),
+FND = LinearNet(net = ModuleList(
+  (0): Linear(in_features=32, out_features=1, bias=True)
+)))
+03/04 04:16:38 Models loaded
+03/04 04:16:38 Optimizers loaded
+03/04 04:16:38 Epoch 1 starting
+03/04 04:17:27 Args initalized
+03/04 04:17:30 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 04:17:30 Using L-GATr Generator
+03/04 04:17:30 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=64, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=128, bias=True)
+                (s2s): Linear(in_features=64, out_features=128, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+              (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+              (s2s): Linear(in_features=128, out_features=64, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                  (mvs2s): Linear(in_features=128, out_features=128, bias=True)
+                  (s2s): Linear(in_features=64, out_features=128, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+                (s2s): Linear(in_features=128, out_features=64, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=64, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=64, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=128, bias=True)
+                (s2s): Linear(in_features=64, out_features=128, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+              (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+              (s2s): Linear(in_features=128, out_features=64, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                  (mvs2s): Linear(in_features=128, out_features=128, bias=True)
+                  (s2s): Linear(in_features=64, out_features=128, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+                (s2s): Linear(in_features=128, out_features=64, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=64, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 04:17:30 MPDiscriminator(MPLayers = ModuleList(
+  (0): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=6, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=195, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+  (1): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=64, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=224, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+),
+FND = LinearNet(net = ModuleList(
+  (0): Linear(in_features=32, out_features=1, bias=True)
+)))
+03/04 04:17:30 Models loaded
+03/04 04:17:30 Optimizers loaded
+03/04 04:17:30 Epoch 1 starting
+03/04 04:20:19 Args initalized
+03/04 04:21:08 Args initalized
+03/04 04:21:11 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 04:21:11 Using L-GATr Generator
+03/04 04:21:11 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=64, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=128, bias=True)
+                (s2s): Linear(in_features=64, out_features=128, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+              (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+              (s2s): Linear(in_features=128, out_features=64, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                  (mvs2s): Linear(in_features=128, out_features=128, bias=True)
+                  (s2s): Linear(in_features=64, out_features=128, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+                (s2s): Linear(in_features=128, out_features=64, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=64, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=64, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=128, bias=True)
+                (s2s): Linear(in_features=64, out_features=128, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=16, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=16, bias=True)
+                (s2s): Linear(in_features=64, out_features=16, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+              (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+              (s2s): Linear(in_features=128, out_features=64, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=64, out_features=128, bias=True)
+                  (mvs2s): Linear(in_features=128, out_features=128, bias=True)
+                  (s2s): Linear(in_features=64, out_features=128, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=128, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=128, out_features=64, bias=True)
+                (s2s): Linear(in_features=128, out_features=64, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=64, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 04:21:11 MPDiscriminator(MPLayers = ModuleList(
+  (0): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=6, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=195, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+  (1): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=64, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=224, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+),
+FND = LinearNet(net = ModuleList(
+  (0): Linear(in_features=32, out_features=1, bias=True)
+)))
+03/04 04:21:12 Models loaded
+03/04 04:21:12 Optimizers loaded
+03/04 04:21:12 Epoch 1 starting
+03/04 04:22:55 Args initalized
+03/04 04:22:58 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 04:22:58 Using L-GATr Generator
+03/04 04:22:58 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 04:22:58 MPDiscriminator(MPLayers = ModuleList(
+  (0): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=6, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=195, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+  (1): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=64, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=224, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+),
+FND = LinearNet(net = ModuleList(
+  (0): Linear(in_features=32, out_features=1, bias=True)
+)))
+03/04 04:22:58 Models loaded
+03/04 04:22:58 Optimizers loaded
+03/04 04:22:58 Epoch 1 starting
+03/04 04:23:47 Args initalized
+03/04 04:23:50 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 04:23:50 Using L-GATr Generator
+03/04 04:23:50 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 04:23:50 MPDiscriminator(MPLayers = ModuleList(
+  (0): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=6, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=195, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+  (1): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=64, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=224, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+),
+FND = LinearNet(net = ModuleList(
+  (0): Linear(in_features=32, out_features=1, bias=True)
+)))
+03/04 04:23:50 Models loaded
+03/04 04:23:50 Optimizers loaded
+03/04 04:23:50 Epoch 1 starting
+03/04 04:27:54 Args initalized
+03/04 04:27:57 Data loaded 
+ X_train 
+ Dataset JetNet
+    Number of datapoints: 119475
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into train data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333 
+ X_test 
+ Dataset JetNet
+    Number of datapoints: 51204
+    Data location: /home/anuranja/sanmay_project/work/GenJet/datasets/
+    Including q jets
+    Split into valid data out of ['train', 'valid', 'test', 'all'] possible splits, with splitting fractions [0.7, 0.30000000000000004, 0]
+    Particle features: ['ptrel', 'etarel', 'phirel', 'mask'], max 30 particles per jet
+    Jet features: ['type', 'pt', 'eta', 'mass', 'num_particles']
+    Particle normalisation: Linear scaling features to feature norms 1.0  and (post-scaling) feature shifts [0.0, 0.0, -0.5, -0.5], with pre-scaling feature maxes [1.6211985349655151, 0.520724892616272, 0.8934717178344727, 1]
+    Jet normalisation: Shift features by 0.0 and then multiplying by 0.03333333333333333
+03/04 04:27:57 Using L-GATr Generator
+03/04 04:27:57 LgatrGenerator(LgatrLayers = ModuleList(
+  (0): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=32, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+  (1): LgatrLayer(
+    (input_projection): Linear(in_features=32, out_features=4, bias=True)
+    (output_projection): Linear(in_features=16, out_features=3, bias=True)
+    (gatr): GATr(
+      (linear_in): EquiLinear(
+        (mvs2s): Linear(in_features=6, out_features=32, bias=True)
+      )
+      (blocks): ModuleList(
+        (0-3): 4 x GATrBlock(
+          (norm): EquiLayerNorm()
+          (attention): SelfAttention(
+            (qkv_module): MultiQueryQKVModule(
+              (q_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=64, bias=True)
+                (s2s): Linear(in_features=32, out_features=64, bias=False)
+              )
+              (k_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (v_linear): EquiLinear(
+                (s2mvs): Linear(in_features=32, out_features=8, bias=True)
+                (mvs2s): Linear(in_features=32, out_features=8, bias=True)
+                (s2s): Linear(in_features=32, out_features=8, bias=False)
+              )
+              (norm_qkv): EquiLayerNorm()
+            )
+            (out_linear): EquiLinear(
+              (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+              (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+              (s2s): Linear(in_features=64, out_features=32, bias=False)
+            )
+            (pos_encoding): Identity()
+            (attention): GeometricAttention()
+          )
+          (mlp): GeoMLP(
+            (layers): ModuleList(
+              (0): GeometricBilinear(
+                (linear_left): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_right): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                )
+                (linear_out): EquiLinear(
+                  (s2mvs): Linear(in_features=32, out_features=64, bias=True)
+                  (mvs2s): Linear(in_features=64, out_features=64, bias=True)
+                  (s2s): Linear(in_features=32, out_features=64, bias=False)
+                )
+                (norm): EquiLayerNorm()
+              )
+              (1): ScalarGatedNonlinearity()
+              (2): EquiLinear(
+                (s2mvs): Linear(in_features=64, out_features=32, bias=True)
+                (mvs2s): Linear(in_features=64, out_features=32, bias=True)
+                (s2s): Linear(in_features=64, out_features=32, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (linear_out): EquiLinear(
+        (s2mvs): Linear(in_features=32, out_features=2, bias=True)
+      )
+    )
+  )
+))
+03/04 04:27:57 MPDiscriminator(MPLayers = ModuleList(
+  (0): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=6, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=195, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+  (1): MPLayer(fe = LinearNet(net = ModuleList(
+    (0): Linear(in_features=64, out_features=96, bias=True)
+    (1): Linear(in_features=96, out_features=160, bias=True)
+    (2): Linear(in_features=160, out_features=192, bias=True)
+  )), 
+   fn = LinearNet(net = ModuleList(
+    (0): Linear(in_features=224, out_features=256, bias=True)
+    (1): Linear(in_features=256, out_features=256, bias=True)
+    (2): Linear(in_features=256, out_features=32, bias=True)
+  )))
+),
+FND = LinearNet(net = ModuleList(
+  (0): Linear(in_features=32, out_features=1, bias=True)
+)))
+03/04 04:27:57 Models loaded
+03/04 04:27:57 Optimizers loaded
+03/04 04:27:57 Epoch 1 starting
+03/04 04:53:33 D real output: 
+ tensor([[0.6778],
+        [0.5000],
+        [0.6853],
+        [0.6060],
+        [0.2303],
+        [0.5000],
+        [0.5000],
+        [0.4123],
+        [0.5039],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 04:53:33 G output: 
+ tensor([[[ 0.0690, -0.1284, -0.5575,  0.5000],
+         [ 0.0696, -0.1372, -0.5541,  0.5000],
+         [ 0.0686, -0.1339, -0.5516,  0.5000],
+         [ 0.0661, -0.1218, -0.5642,  0.5000],
+         [ 0.0685, -0.1302, -0.5577,  0.5000],
+         [ 0.0694, -0.1270, -0.5589,  0.5000],
+         [ 0.0692, -0.1289, -0.5568,  0.5000],
+         [ 0.0672, -0.1249, -0.5619,  0.5000],
+         [ 0.0684, -0.1250, -0.5610,  0.5000],
+         [ 0.0683, -0.1335, -0.5526,  0.5000]],
+
+        [[ 0.0661, -0.1322, -0.5562,  0.5000],
+         [ 0.0676, -0.1310, -0.5550,  0.5000],
+         [ 0.0669, -0.1319, -0.5523,  0.5000],
+         [ 0.0668, -0.1285, -0.5605,  0.5000],
+         [ 0.0673, -0.1281, -0.5569,  0.5000],
+         [ 0.0662, -0.1333, -0.5530,  0.5000],
+         [ 0.0667, -0.1326, -0.5557,  0.5000],
+         [ 0.0666, -0.1291, -0.5584,  0.5000],
+         [ 0.0657, -0.1322, -0.5553,  0.5000],
+         [ 0.0668, -0.1306, -0.5560,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 04:53:33 D fake output: 
+ tensor([[0.5281],
+        [0.5592],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.2521],
+        [0.5000],
+        [0.3570],
+        [0.6451],
+        [0.4902]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 04:53:34 Epoch 1 Training Over
+03/04 04:53:34 G loss: 0.273
+03/04 04:53:34 Dr loss: 0.271
+03/04 04:53:34 Df loss: 0.275
+03/04 04:53:34 D loss: 0.547
+03/04 04:53:34 Epoch 2 starting
+03/04 05:19:03 D real output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.5874],
+        [0.5000],
+        [0.5394],
+        [0.4053],
+        [0.5000],
+        [0.3821],
+        [0.5000],
+        [0.4805]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 05:19:03 G output: 
+ tensor([[[ 0.0380, -0.0197, -0.5136,  0.5000],
+         [ 0.0374, -0.0252, -0.5082,  0.5000],
+         [ 0.0372, -0.0248, -0.5089,  0.5000],
+         [ 0.0358, -0.0242, -0.5097,  0.5000],
+         [ 0.0373, -0.0260, -0.5086,  0.5000],
+         [ 0.0331, -0.0213, -0.5091,  0.5000],
+         [ 0.0371, -0.0269, -0.5081,  0.5000],
+         [ 0.0371, -0.0270, -0.5082,  0.5000],
+         [ 0.0380, -0.0212, -0.5123,  0.5000],
+         [ 0.0379, -0.0267, -0.5098,  0.5000]],
+
+        [[ 0.0380, -0.0258, -0.5095,  0.5000],
+         [ 0.0381, -0.0240, -0.5094,  0.5000],
+         [ 0.0383, -0.0290, -0.5079,  0.5000],
+         [ 0.0381, -0.0235, -0.5093,  0.5000],
+         [ 0.0383, -0.0220, -0.5130,  0.5000],
+         [ 0.0386, -0.0220, -0.5130,  0.5000],
+         [ 0.0384, -0.0220, -0.5126,  0.5000],
+         [ 0.0379, -0.0250, -0.5097,  0.5000],
+         [ 0.0379, -0.0267, -0.5079,  0.5000],
+         [ 0.0376, -0.0253, -0.5081,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 05:19:03 D fake output: 
+ tensor([[0.5000],
+        [0.4286],
+        [0.5000],
+        [0.3562],
+        [0.4927],
+        [0.5000],
+        [0.5448],
+        [0.5491],
+        [0.5000],
+        [0.5634]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 05:19:03 Epoch 2 Training Over
+03/04 05:19:03 G loss: 0.255
+03/04 05:19:03 Dr loss: 0.253
+03/04 05:19:03 Df loss: 0.255
+03/04 05:19:03 D loss: 0.508
+03/04 05:19:03 Epoch 3 starting
+03/04 05:44:32 D real output: 
+ tensor([[0.5930],
+        [0.4974],
+        [0.4047],
+        [0.3685],
+        [0.5000],
+        [0.4168],
+        [0.5000],
+        [0.6903],
+        [0.5000],
+        [0.4771]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 05:44:32 G output: 
+ tensor([[[ 0.0604, -0.1510, -0.5375,  0.5000],
+         [ 0.0644, -0.1522, -0.5360,  0.5000],
+         [ 0.0662, -0.1489, -0.5381,  0.5000],
+         [ 0.0661, -0.1527, -0.5344,  0.5000],
+         [ 0.0668, -0.1526, -0.5356,  0.5000],
+         [ 0.0657, -0.1445, -0.5397,  0.5000],
+         [ 0.0666, -0.1528, -0.5331,  0.5000],
+         [ 0.0657, -0.1490, -0.5363,  0.5000],
+         [ 0.0603, -0.1477, -0.5404,  0.5000],
+         [ 0.0669, -0.1527, -0.5354,  0.5000]],
+
+        [[ 0.0552, -0.1529, -0.5381,  0.5000],
+         [ 0.0567, -0.1591, -0.5354,  0.5000],
+         [ 0.0651, -0.1527, -0.5326,  0.5000],
+         [ 0.0665, -0.1506, -0.5356,  0.5000],
+         [ 0.0659, -0.1523, -0.5365,  0.5000],
+         [ 0.0597, -0.1539, -0.5352,  0.5000],
+         [ 0.0648, -0.1548, -0.5359,  0.5000],
+         [ 0.0656, -0.1524, -0.5343,  0.5000],
+         [ 0.0645, -0.1525, -0.5336,  0.5000],
+         [ 0.0666, -0.1516, -0.5352,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 05:44:32 D fake output: 
+ tensor([[0.5000],
+        [0.5749],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.7691],
+        [0.3582]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 05:44:33 Epoch 3 Training Over
+03/04 05:44:33 G loss: 0.262
+03/04 05:44:33 Dr loss: 0.250
+03/04 05:44:33 Df loss: 0.249
+03/04 05:44:33 D loss: 0.498
+03/04 05:45:47 Couldn't remove previous loss curves
+03/04 05:45:47 Epoch 4 starting
+03/04 06:11:13 D real output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.1988],
+        [0.5904],
+        [0.9914],
+        [0.9998],
+        [1.0000],
+        [0.5000],
+        [1.0000],
+        [0.6089]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 06:11:13 G output: 
+ tensor([[[ 0.0715, -0.0152, -0.4979,  0.5000],
+         [ 0.0657, -0.0175, -0.4983,  0.5000],
+         [ 0.0704, -0.0160, -0.4983,  0.5000],
+         [ 0.0652, -0.0176, -0.4986,  0.5000],
+         [ 0.0713, -0.0147, -0.4977,  0.5000],
+         [ 0.0679, -0.0169, -0.4975,  0.5000],
+         [ 0.0650, -0.0193, -0.4983,  0.5000],
+         [ 0.0722, -0.0142, -0.5006,  0.5000],
+         [ 0.0722, -0.0149, -0.5000,  0.5000],
+         [ 0.0704, -0.0174, -0.4967,  0.5000]],
+
+        [[ 0.0742, -0.0134, -0.4987,  0.5000],
+         [ 0.0710, -0.0172, -0.4978,  0.5000],
+         [ 0.0632, -0.0211, -0.4979,  0.5000],
+         [ 0.0699, -0.0171, -0.4968,  0.5000],
+         [ 0.0709, -0.0158, -0.4986,  0.5000],
+         [-0.0000,  0.0000, -0.0000, -0.5000],
+         [ 0.0691, -0.0188, -0.4971,  0.5000],
+         [ 0.0710, -0.0179, -0.4957,  0.5000],
+         [ 0.0701, -0.0180, -0.4976,  0.5000],
+         [ 0.0719, -0.0163, -0.4977,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 06:11:13 D fake output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.4980],
+        [0.5000],
+        [0.3742],
+        [0.4977],
+        [0.0571],
+        [0.5000],
+        [0.0313],
+        [0.3794]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 06:11:14 Epoch 4 Training Over
+03/04 06:11:14 G loss: 0.401
+03/04 06:11:14 Dr loss: 0.211
+03/04 06:11:14 Df loss: 0.191
+03/04 06:11:14 D loss: 0.402
+03/04 06:11:14 Epoch 5 starting
+03/04 06:36:40 D real output: 
+ tensor([[1.0000],
+        [1.0000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [1.0000],
+        [0.5000],
+        [0.5000],
+        [0.9898]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 06:36:40 G output: 
+ tensor([[[ 0.0352, -0.1479, -0.5590,  0.5000],
+         [ 0.0334, -0.1514, -0.5588,  0.5000],
+         [ 0.0345, -0.1507, -0.5582,  0.5000],
+         [ 0.0347, -0.1501, -0.5590,  0.5000],
+         [ 0.0340, -0.1486, -0.5597,  0.5000],
+         [ 0.0344, -0.1499, -0.5584,  0.5000],
+         [ 0.0310, -0.1507, -0.5604,  0.5000],
+         [ 0.0352, -0.1469, -0.5605,  0.5000],
+         [ 0.0340, -0.1512, -0.5586,  0.5000],
+         [ 0.0291, -0.1533, -0.5575,  0.5000]],
+
+        [[ 0.0354, -0.1494, -0.5603,  0.5000],
+         [ 0.0357, -0.1501, -0.5588,  0.5000],
+         [ 0.0338, -0.1528, -0.5583,  0.5000],
+         [ 0.0359, -0.1517, -0.5590,  0.5000],
+         [ 0.0362, -0.1479, -0.5605,  0.5000],
+         [ 0.0360, -0.1498, -0.5596,  0.5000],
+         [ 0.0357, -0.1504, -0.5598,  0.5000],
+         [ 0.0354, -0.1525, -0.5587,  0.5000],
+         [ 0.0342, -0.1505, -0.5600,  0.5000],
+         [ 0.0359, -0.1479, -0.5591,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 06:36:40 D fake output: 
+ tensor([[0.5000],
+        [1.0000],
+        [0.5000],
+        [0.5000],
+        [1.0000],
+        [0.5000],
+        [0.5000],
+        [0.9999],
+        [0.5000],
+        [0.9998]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 06:36:41 Epoch 5 Training Over
+03/04 06:36:41 G loss: 0.556
+03/04 06:36:41 Dr loss: 0.129
+03/04 06:36:41 Df loss: 0.185
+03/04 06:36:41 D loss: 0.315
+03/04 06:36:41 Epoch 6 starting
+03/04 07:02:09 D real output: 
+ tensor([[1.2169e-12],
+        [4.0686e-14],
+        [9.0006e-16],
+        [5.0000e-01],
+        [1.6062e-07],
+        [3.0815e-15],
+        [2.2585e-12],
+        [5.0000e-01],
+        [5.0000e-01],
+        [5.0000e-01]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 07:02:09 G output: 
+ tensor([[[-0.3739, -0.3986, -0.2978,  0.5000],
+         [ 0.0193, -0.0719, -0.4049,  0.5000],
+         [ 0.3010,  0.4460, -0.3991,  0.5000],
+         [-0.3548, -0.3949, -0.3023,  0.5000],
+         [ 0.2989,  0.4351, -0.3988,  0.5000],
+         [-0.1589, -0.2653, -0.3670,  0.5000],
+         [ 0.2456,  0.2821, -0.4088,  0.5000],
+         [-0.3355, -0.3937, -0.3070,  0.5000],
+         [ 0.2968,  0.4233, -0.3999,  0.5000],
+         [-0.3754, -0.3908, -0.2974,  0.5000]],
+
+        [[-0.3746, -0.3870, -0.3053,  0.5000],
+         [-0.3587, -0.3954, -0.3024,  0.5000],
+         [ 0.3076,  0.4490, -0.3961,  0.5000],
+         [ 0.3045,  0.4264, -0.3980,  0.5000],
+         [ 0.3061,  0.4376, -0.3978,  0.5000],
+         [-0.3298, -0.3859, -0.3152,  0.5000],
+         [-0.3579, -0.3923, -0.3035,  0.5000],
+         [ 0.3019,  0.4180, -0.3988,  0.5000],
+         [-0.3806, -0.3858, -0.3055,  0.5000],
+         [-0.3781, -0.3879, -0.3046,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 07:02:09 D fake output: 
+ tensor([[5.0000e-01],
+        [5.0000e-01],
+        [7.3467e-11],
+        [3.3980e-09],
+        [4.7994e-05],
+        [2.9420e-07],
+        [3.2983e-08],
+        [5.0000e-01],
+        [5.0000e-01],
+        [9.7806e-09]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 07:02:09 Epoch 6 Training Over
+03/04 07:02:09 G loss: 0.516
+03/04 07:02:09 Dr loss: 0.237
+03/04 07:02:09 Df loss: 0.158
+03/04 07:02:09 D loss: 0.395
+03/04 07:03:25 Couldn't remove previous eval curves
+03/04 07:03:25 Epoch 7 starting
+03/04 07:28:51 D real output: 
+ tensor([[0.6214],
+        [0.4705],
+        [0.5000],
+        [0.6014],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5080],
+        [0.5000],
+        [0.4536]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 07:28:52 G output: 
+ tensor([[[-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0655,  0.2791, -0.5182,  0.5000],
+         [-0.0010,  0.0970, -0.5071,  0.5000],
+         [-0.0116,  0.1075, -0.5077,  0.5000],
+         [ 0.0384, -0.0399, -0.4966,  0.5000],
+         [ 0.0673, -0.1059, -0.4874,  0.5000],
+         [ 0.0725, -0.1437, -0.4839,  0.5000],
+         [-0.0554,  0.2448, -0.5157,  0.5000],
+         [-0.0550,  0.2337, -0.5149,  0.5000],
+         [ 0.0383, -0.0114, -0.4990,  0.5000]],
+
+        [[ 0.0312, -0.0472, -0.4989,  0.5000],
+         [ 0.0348, -0.0565, -0.4989,  0.5000],
+         [ 0.0272, -0.0131, -0.4991,  0.5000],
+         [ 0.0581, -0.1224, -0.4887,  0.5000],
+         [-0.0368,  0.1307, -0.5101,  0.5000],
+         [ 0.0273, -0.0409, -0.4999,  0.5000],
+         [ 0.0378, -0.0834, -0.4983,  0.5000],
+         [ 0.0082,  0.0354, -0.5035,  0.5000],
+         [ 0.0425, -0.0724, -0.4945,  0.5000],
+         [-0.0236,  0.1062, -0.5087,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 07:28:52 D fake output: 
+ tensor([[0.5670],
+        [0.5755],
+        [0.5000],
+        [0.5242],
+        [0.5000],
+        [0.5000],
+        [0.5835],
+        [0.5000],
+        [0.5398],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 07:28:52 Epoch 7 Training Over
+03/04 07:28:52 G loss: 0.462
+03/04 07:28:52 Dr loss: 0.461
+03/04 07:28:52 Df loss: 0.186
+03/04 07:28:52 D loss: 0.647
+03/04 07:28:52 Epoch 8 starting
+03/04 07:54:20 D real output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5765],
+        [0.5520],
+        [0.4208],
+        [0.5000],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 07:54:20 G output: 
+ tensor([[[ 0.0860, -0.0409, -0.5237,  0.5000],
+         [ 0.0771,  0.0112, -0.5075,  0.5000],
+         [ 0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0573,  0.0546, -0.4929,  0.5000],
+         [ 0.0555,  0.0776, -0.4845,  0.5000],
+         [ 0.0664,  0.0304, -0.5009,  0.5000],
+         [ 0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0685,  0.0254, -0.5033,  0.5000],
+         [ 0.0564,  0.0851, -0.4811,  0.5000],
+         [ 0.0402,  0.0996, -0.4778,  0.5000]],
+
+        [[ 0.0283,  0.0851, -0.4791,  0.5000],
+         [ 0.0426,  0.0325, -0.4984,  0.5000],
+         [ 0.0426,  0.0249, -0.5010,  0.5000],
+         [ 0.0552, -0.0291, -0.5200,  0.5000],
+         [ 0.0461,  0.0237, -0.5014,  0.5000],
+         [ 0.0316,  0.0830, -0.4794,  0.5000],
+         [ 0.0198,  0.1381, -0.4603,  0.5000],
+         [ 0.0421,  0.1131, -0.4663,  0.5000],
+         [ 0.0570, -0.0234, -0.5177,  0.5000],
+         [ 0.0326,  0.0616, -0.4881,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 07:54:20 D fake output: 
+ tensor([[0.5201],
+        [0.5335],
+        [0.5000],
+        [0.4317],
+        [0.5000],
+        [0.5000],
+        [0.4384],
+        [0.5000],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 07:54:21 Epoch 8 Training Over
+03/04 07:54:21 G loss: 0.256
+03/04 07:54:21 Dr loss: 0.251
+03/04 07:54:21 Df loss: 0.253
+03/04 07:54:21 D loss: 0.503
+03/04 07:54:21 Epoch 9 starting
+03/04 08:19:48 D real output: 
+ tensor([[0.5091],
+        [0.5000],
+        [0.5000],
+        [0.3541],
+        [0.5548],
+        [0.5349],
+        [0.4339],
+        [0.3984],
+        [0.5051],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 08:19:48 G output: 
+ tensor([[[ 0.0500,  0.0032, -0.5126,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0528, -0.2106, -0.6050,  0.5000],
+         [ 0.0495, -0.1816, -0.5942,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0441, -0.0204, -0.5265,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0528, -0.3947, -0.6262,  0.5000],
+         [ 0.0718,  0.1501, -0.4245,  0.5000]],
+
+        [[ 0.0542, -0.1312, -0.5846,  0.5000],
+         [ 0.0633,  0.0381, -0.4983,  0.5000],
+         [ 0.0702,  0.0696, -0.4745,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0591, -0.2904, -0.6230,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0516,  0.0203, -0.5094,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 08:19:48 D fake output: 
+ tensor([[0.4638],
+        [0.5000],
+        [0.5000],
+        [0.5315],
+        [0.5332],
+        [0.5000],
+        [0.4385],
+        [0.5301],
+        [0.3888],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 08:19:49 Epoch 9 Training Over
+03/04 08:19:49 G loss: 0.258
+03/04 08:19:49 Dr loss: 0.250
+03/04 08:19:49 Df loss: 0.249
+03/04 08:19:49 D loss: 0.500
+03/04 08:21:04 Epoch 10 starting
+03/04 08:46:32 D real output: 
+ tensor([[0.4476],
+        [0.5000],
+        [0.5000],
+        [0.4377],
+        [0.5000],
+        [0.5161],
+        [0.5000],
+        [0.5120],
+        [0.5914],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 08:46:33 G output: 
+ tensor([[[ 1.7675e-02,  6.9161e-03, -4.3977e-01,  5.0000e-01],
+         [-8.3855e-03, -6.2729e-02, -4.5849e-01,  5.0000e-01],
+         [ 9.8233e-03, -3.4140e-02, -4.4783e-01,  5.0000e-01],
+         [ 2.2357e-02,  1.3157e-02, -4.3668e-01,  5.0000e-01],
+         [ 5.2798e-04, -8.7593e-02, -4.6512e-01,  5.0000e-01],
+         [-8.5417e-02, -3.0503e-01, -6.1940e-01,  5.0000e-01],
+         [-2.5140e-03, -4.1962e-02, -4.5185e-01,  5.0000e-01],
+         [ 5.1797e-02,  7.6150e-02, -4.2785e-01,  5.0000e-01],
+         [-8.7182e-04, -7.5989e-02, -4.6121e-01,  5.0000e-01],
+         [ 1.8248e-02, -2.6915e-02, -4.4428e-01,  5.0000e-01]],
+
+        [[ 2.2225e-02,  9.4395e-03, -4.3343e-01,  5.0000e-01],
+         [ 8.0528e-03, -6.1103e-02, -4.4899e-01,  5.0000e-01],
+         [ 4.1799e-03, -1.5342e-02, -4.4124e-01,  5.0000e-01],
+         [ 2.5089e-03, -5.7929e-02, -4.4972e-01,  5.0000e-01],
+         [-1.5039e-02, -1.5213e-01, -4.9430e-01,  5.0000e-01],
+         [ 5.3567e-02,  6.5353e-01, -6.2018e-01,  5.0000e-01],
+         [-3.2760e-03, -1.0696e-01, -4.6915e-01,  5.0000e-01],
+         [ 3.0382e-03, -5.1215e-02, -4.4834e-01,  5.0000e-01],
+         [-2.3364e-02, -1.4747e-01, -4.9244e-01,  5.0000e-01],
+         [ 1.9451e-02, -7.7785e-02, -4.5386e-01,  5.0000e-01]]],
+       device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 08:46:33 D fake output: 
+ tensor([[0.5000],
+        [0.4779],
+        [0.4649],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4617],
+        [0.5165],
+        [0.5000],
+        [0.4307]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 08:46:33 Epoch 10 Training Over
+03/04 08:46:33 G loss: 0.252
+03/04 08:46:33 Dr loss: 0.252
+03/04 08:46:33 Df loss: 0.251
+03/04 08:46:33 D loss: 0.503
+03/04 08:46:33 Epoch 11 starting
+03/04 09:12:02 D real output: 
+ tensor([[0.4870],
+        [0.5000],
+        [0.5401],
+        [0.5000],
+        [0.4653],
+        [0.5000],
+        [0.5079],
+        [0.5429],
+        [0.5000],
+        [0.4256]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 09:12:02 G output: 
+ tensor([[[-0.0382, -0.1960, -0.5033,  0.5000],
+         [ 0.0073,  0.1261, -0.4188,  0.5000],
+         [-0.0042, -0.0030, -0.3805,  0.5000],
+         [ 0.0059,  0.0962, -0.4059,  0.5000],
+         [-0.0129, -0.0358, -0.3817,  0.5000],
+         [-0.0043,  0.0172, -0.3831,  0.5000],
+         [-0.0112, -0.0300, -0.3813,  0.5000],
+         [ 0.0009,  0.0433, -0.3888,  0.5000],
+         [ 0.0068,  0.0809, -0.3987,  0.5000],
+         [ 0.0160,  0.2608, -0.4947,  0.5000]],
+
+        [[ 0.0305,  0.2733, -0.4849,  0.5000],
+         [ 0.0195,  0.0749, -0.3857,  0.5000],
+         [-0.0133, -0.1246, -0.4317,  0.5000],
+         [ 0.0287,  0.2474, -0.4690,  0.5000],
+         [ 0.0025, -0.0691, -0.3878,  0.5000],
+         [ 0.0125,  0.0256, -0.3753,  0.5000],
+         [ 0.0146,  0.0962, -0.3939,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0334, -0.4476, -0.8018,  0.5000],
+         [-0.0447, -0.2914, -0.6711,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 09:12:02 D fake output: 
+ tensor([[0.5000],
+        [0.4900],
+        [0.5000],
+        [0.5788],
+        [0.5258],
+        [0.5885],
+        [0.5051],
+        [0.5000],
+        [0.5060],
+        [0.5536]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 09:12:03 Epoch 11 Training Over
+03/04 09:12:03 G loss: 0.252
+03/04 09:12:03 Dr loss: 0.251
+03/04 09:12:03 Df loss: 0.251
+03/04 09:12:03 D loss: 0.502
+03/04 09:12:03 Epoch 12 starting
+03/04 09:37:32 D real output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4888],
+        [0.5000],
+        [0.5000],
+        [0.4892],
+        [0.4635],
+        [0.5000],
+        [0.4632]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 09:37:32 G output: 
+ tensor([[[ 0.0337,  0.0612, -0.4457,  0.5000],
+         [ 0.0152,  0.0788, -0.4403,  0.5000],
+         [ 0.0327, -0.3077, -0.6312,  0.5000],
+         [ 0.0077,  0.0817, -0.4390,  0.5000],
+         [ 0.0251,  0.1267, -0.4004,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0191, -0.0063, -0.5052,  0.5000],
+         [ 0.0342,  0.1232, -0.4107,  0.5000],
+         [ 0.0185,  0.0653, -0.4420,  0.5000],
+         [ 0.0352,  0.1009, -0.4269,  0.5000]],
+
+        [[ 0.0063, -0.2155, -0.6230,  0.5000],
+         [ 0.0077, -0.1983, -0.6185,  0.5000],
+         [ 0.0127,  0.0862, -0.4179,  0.5000],
+         [ 0.0077,  0.0770, -0.4264,  0.5000],
+         [ 0.0176,  0.0726, -0.4356,  0.5000],
+         [ 0.0122, -0.0019, -0.4984,  0.5000],
+         [ 0.0158,  0.1064, -0.4078,  0.5000],
+         [ 0.0309,  0.1131, -0.4051,  0.5000],
+         [-0.0050,  0.0200, -0.4759,  0.5000],
+         [ 0.0085, -0.0059, -0.4942,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 09:37:32 D fake output: 
+ tensor([[0.5000],
+        [0.5316],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5269],
+        [0.5292],
+        [0.5049],
+        [0.4913],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 09:37:33 Epoch 12 Training Over
+03/04 09:37:33 G loss: 0.251
+03/04 09:37:33 Dr loss: 0.250
+03/04 09:37:33 Df loss: 0.252
+03/04 09:37:33 D loss: 0.502
+03/04 09:38:49 Epoch 13 starting
+03/04 10:04:17 D real output: 
+ tensor([[0.5418],
+        [0.5117],
+        [0.5089],
+        [0.4799],
+        [0.5000],
+        [0.5150],
+        [0.5000],
+        [0.4990],
+        [0.4978],
+        [0.4744]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 10:04:18 G output: 
+ tensor([[[ 1.4157e-02,  1.7914e-02, -4.5407e-01,  5.0000e-01],
+         [ 2.0729e-02, -3.5906e-03, -5.6243e-01,  5.0000e-01],
+         [ 6.8470e-03,  2.1976e-02, -4.0458e-01,  5.0000e-01],
+         [ 1.8242e-02,  1.1943e-02, -4.6656e-01,  5.0000e-01],
+         [ 5.9538e-03,  2.1229e-03, -5.4576e-01,  5.0000e-01],
+         [ 1.2578e-02,  6.6315e-02, -2.7436e-01,  5.0000e-01],
+         [ 4.1245e-03,  5.0475e-02, -3.0363e-01,  5.0000e-01],
+         [-3.5283e-04,  7.0348e-02, -2.7878e-01,  5.0000e-01],
+         [ 3.3134e-02, -2.3273e-03, -5.9454e-01,  5.0000e-01],
+         [ 3.3386e-03,  3.1575e-02, -3.7612e-01,  5.0000e-01]],
+
+        [[ 7.8514e-02, -1.7012e-01, -8.2741e-01,  5.0000e-01],
+         [ 3.6250e-03,  5.2505e-02, -3.6795e-01,  5.0000e-01],
+         [ 0.0000e+00, -0.0000e+00, -0.0000e+00, -5.0000e-01],
+         [ 0.0000e+00, -0.0000e+00, -0.0000e+00, -5.0000e-01],
+         [ 1.3756e-02,  8.4097e-02, -2.8680e-01,  5.0000e-01],
+         [ 8.8652e-02, -1.3034e-01, -8.1400e-01,  5.0000e-01],
+         [ 1.0611e-02,  1.0864e-01, -2.4510e-01,  5.0000e-01],
+         [ 0.0000e+00, -0.0000e+00, -0.0000e+00, -5.0000e-01],
+         [ 0.0000e+00, -0.0000e+00, -0.0000e+00, -5.0000e-01],
+         [ 0.0000e+00, -0.0000e+00, -0.0000e+00, -5.0000e-01]]],
+       device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 10:04:18 D fake output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.5374],
+        [0.5036],
+        [0.4577],
+        [0.5362],
+        [0.5048],
+        [0.5000],
+        [0.5000],
+        [0.5428]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 10:04:18 Epoch 13 Training Over
+03/04 10:04:18 G loss: 0.251
+03/04 10:04:18 Dr loss: 0.251
+03/04 10:04:18 Df loss: 0.250
+03/04 10:04:18 D loss: 0.501
+03/04 10:04:18 Epoch 14 starting
+03/04 10:29:48 D real output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.5633],
+        [0.4992],
+        [0.5250],
+        [0.5000],
+        [0.4338],
+        [0.5322],
+        [0.5000],
+        [0.5052]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 10:29:48 G output: 
+ tensor([[[ 0.0242,  0.1283, -0.4479,  0.5000],
+         [ 0.0298,  0.0839, -0.4486,  0.5000],
+         [ 0.0252,  0.0542, -0.4505,  0.5000],
+         [ 0.0291,  0.1300, -0.4486,  0.5000],
+         [ 0.0323,  0.1286, -0.4455,  0.5000],
+         [ 0.0104, -0.1016, -0.4722,  0.5000],
+         [ 0.0133,  0.0427, -0.4559,  0.5000],
+         [ 0.0107,  0.0455, -0.4556,  0.5000],
+         [-0.0040, -0.2093, -0.5031,  0.5000],
+         [ 0.0165,  0.0267, -0.4558,  0.5000]],
+
+        [[ 0.0386,  0.1518, -0.4396,  0.5000],
+         [-0.0323, -0.5713, -0.7672,  0.5000],
+         [ 0.0255,  0.0524, -0.4495,  0.5000],
+         [ 0.0460,  0.1762, -0.4358,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0174, -0.1313, -0.4769,  0.5000],
+         [ 0.0501,  0.2030, -0.4351,  0.5000],
+         [ 0.0161,  0.0109, -0.4557,  0.5000],
+         [ 0.0577,  0.2523, -0.4295,  0.5000],
+         [ 0.0273,  0.1304, -0.4457,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 10:29:48 D fake output: 
+ tensor([[0.4748],
+        [0.5000],
+        [0.5002],
+        [0.5255],
+        [0.5710],
+        [0.5001],
+        [0.5000],
+        [0.5000],
+        [0.5242],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 10:29:49 Epoch 14 Training Over
+03/04 10:29:49 G loss: 0.252
+03/04 10:29:49 Dr loss: 0.252
+03/04 10:29:49 Df loss: 0.250
+03/04 10:29:49 D loss: 0.501
+03/04 10:29:49 Epoch 15 starting
+03/04 10:55:17 D real output: 
+ tensor([[0.5000],
+        [0.5048],
+        [0.5000],
+        [0.5000],
+        [0.5196],
+        [0.4765],
+        [0.4962],
+        [0.4728],
+        [0.5213],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 10:55:17 G output: 
+ tensor([[[ 0.0051, -0.0197, -0.5160,  0.5000],
+         [ 0.0109, -0.0207, -0.5427,  0.5000],
+         [-0.0012, -0.0164, -0.4607,  0.5000],
+         [-0.0046, -0.0180, -0.4681,  0.5000],
+         [ 0.0111, -0.0260, -0.5744,  0.5000],
+         [-0.0016, -0.0153, -0.4318,  0.5000],
+         [ 0.0305, -0.0433, -0.6644,  0.5000],
+         [ 0.0120,  0.4228, -0.1836,  0.5000],
+         [-0.0021, -0.0166, -0.4631,  0.5000],
+         [ 0.0209, -0.0128, -0.5535,  0.5000]],
+
+        [[-0.0343, -0.0292, -0.3270,  0.5000],
+         [ 0.0679,  0.7718, -0.2593,  0.5000],
+         [ 0.0204, -0.0348, -0.6057,  0.5000],
+         [-0.0098, -0.0248, -0.4421,  0.5000],
+         [-0.0110, -0.0241, -0.4242,  0.5000],
+         [-0.0019, -0.0299, -0.5198,  0.5000],
+         [-0.0057, -0.0256, -0.4729,  0.5000],
+         [ 0.0013, -0.0286, -0.5285,  0.5000],
+         [ 0.0232, -0.0260, -0.5983,  0.5000],
+         [-0.0073, -0.0249, -0.4412,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 10:55:17 D fake output: 
+ tensor([[0.5000],
+        [0.4661],
+        [0.4792],
+        [0.5000],
+        [0.4836],
+        [0.4900],
+        [0.5000],
+        [0.5104],
+        [0.5214],
+        [0.5330]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 10:55:18 Epoch 15 Training Over
+03/04 10:55:18 G loss: 0.250
+03/04 10:55:18 Dr loss: 0.250
+03/04 10:55:18 Df loss: 0.251
+03/04 10:55:18 D loss: 0.501
+03/04 10:56:34 Epoch 16 starting
+03/04 11:22:04 D real output: 
+ tensor([[0.5000],
+        [0.5647],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4714],
+        [0.5000],
+        [0.5187],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 11:22:04 G output: 
+ tensor([[[-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0501,  0.1051, -0.3749,  0.5000],
+         [ 0.0044, -0.1269, -0.6409,  0.5000],
+         [ 0.0193, -0.0111, -0.4446,  0.5000],
+         [ 0.0292,  0.0178, -0.4182,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0179, -0.1526, -0.6741,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0344,  0.0589, -0.3994,  0.5000]],
+
+        [[-0.0407, -0.3885, -0.8374,  0.5000],
+         [-0.0281, -0.2000, -0.6573,  0.5000],
+         [ 0.0338,  0.1063, -0.3706,  0.5000],
+         [ 0.0369,  0.5337, -0.3003,  0.5000],
+         [ 0.0295,  0.0693, -0.3849,  0.5000],
+         [ 0.0026, -0.0493, -0.4499,  0.5000],
+         [ 0.0209,  0.0115, -0.4082,  0.5000],
+         [ 0.0270,  0.0214, -0.4045,  0.5000],
+         [-0.0143, -0.1050, -0.5088,  0.5000],
+         [ 0.0087, -0.0889, -0.4980,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 11:22:04 D fake output: 
+ tensor([[0.5000],
+        [0.5271],
+        [0.5075],
+        [0.5000],
+        [0.5379],
+        [0.5416],
+        [0.5000],
+        [0.5000],
+        [0.5459],
+        [0.5218]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 11:22:05 Epoch 16 Training Over
+03/04 11:22:05 G loss: 0.251
+03/04 11:22:05 Dr loss: 0.250
+03/04 11:22:05 Df loss: 0.250
+03/04 11:22:05 D loss: 0.501
+03/04 11:22:05 Epoch 17 starting
+03/04 11:47:35 D real output: 
+ tensor([[0.5257],
+        [0.5216],
+        [0.5159],
+        [0.5000],
+        [0.5255],
+        [0.4942],
+        [0.5000],
+        [0.5145],
+        [0.5000],
+        [0.4839]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 11:47:35 G output: 
+ tensor([[[ 5.4344e-03,  4.4801e-02, -5.0147e-01,  5.0000e-01],
+         [-3.7915e-03, -1.7580e-01, -4.6750e-01,  5.0000e-01],
+         [ 1.7842e-02, -1.4362e-01, -4.6858e-01,  5.0000e-01],
+         [ 2.1396e-03, -1.3037e-01, -4.7627e-01,  5.0000e-01],
+         [ 1.6479e-02, -4.1793e-02, -4.8863e-01,  5.0000e-01],
+         [ 1.4096e-02, -1.3066e-01, -4.7325e-01,  5.0000e-01],
+         [-2.7008e-03,  2.4871e-02, -5.0125e-01,  5.0000e-01],
+         [-1.2660e-03,  1.0550e-01, -5.0915e-01,  5.0000e-01],
+         [-7.1625e-04, -1.3041e-01, -4.7569e-01,  5.0000e-01],
+         [ 1.1854e-02, -3.1928e-01, -4.2736e-01,  5.0000e-01]],
+
+        [[-7.0731e-04, -6.0473e-02, -4.8726e-01,  5.0000e-01],
+         [-3.2668e-03,  5.1405e-02, -5.0368e-01,  5.0000e-01],
+         [ 7.2266e-03,  3.6147e-02, -4.9981e-01,  5.0000e-01],
+         [-3.5633e-04,  1.4172e-01, -5.0977e-01,  5.0000e-01],
+         [ 1.5134e-02, -2.2387e-01, -4.5113e-01,  5.0000e-01],
+         [ 3.7151e-03, -1.2541e-01, -4.7526e-01,  5.0000e-01],
+         [ 4.3355e-03,  3.3608e-02, -5.0007e-01,  5.0000e-01],
+         [ 5.3416e-03, -5.3651e-02, -4.8671e-01,  5.0000e-01],
+         [ 7.2482e-03,  2.1608e-02, -4.9771e-01,  5.0000e-01],
+         [-1.0438e-03, -1.4068e-01, -4.7153e-01,  5.0000e-01]]],
+       device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 11:47:35 D fake output: 
+ tensor([[0.4826],
+        [0.5000],
+        [0.5000],
+        [0.5189],
+        [0.5558],
+        [0.5420],
+        [0.5000],
+        [0.5300],
+        [0.4566],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 11:47:36 Epoch 17 Training Over
+03/04 11:47:36 G loss: 0.250
+03/04 11:47:36 Dr loss: 0.250
+03/04 11:47:36 Df loss: 0.251
+03/04 11:47:36 D loss: 0.501
+03/04 11:47:36 Epoch 18 starting
+03/04 12:13:07 D real output: 
+ tensor([[0.5170],
+        [0.5000],
+        [0.5000],
+        [0.5047],
+        [0.5058],
+        [0.5000],
+        [0.5074],
+        [0.4608],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 12:13:07 G output: 
+ tensor([[[ 0.0665, -0.2558, -0.4334,  0.5000],
+         [ 0.0196,  0.1321, -0.4917,  0.5000],
+         [ 0.0228,  0.0022, -0.4742,  0.5000],
+         [ 0.0219,  0.0485, -0.4811,  0.5000],
+         [ 0.0219,  0.1117, -0.4890,  0.5000],
+         [ 0.0246,  0.0496, -0.4807,  0.5000],
+         [ 0.0257,  0.1084, -0.4875,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0263,  0.0732, -0.4836,  0.5000]],
+
+        [[ 0.0781, -0.3708, -0.4606,  0.5000],
+         [ 0.0575, -0.1476, -0.4489,  0.5000],
+         [ 0.0637, -0.1472, -0.4490,  0.5000],
+         [ 0.0403,  0.0283, -0.4710,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0447,  0.0277, -0.4706,  0.5000],
+         [ 0.0495, -0.0655, -0.4593,  0.5000],
+         [ 0.0386,  0.0344, -0.4723,  0.5000],
+         [ 0.0333,  0.1579, -0.4848,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 12:13:07 D fake output: 
+ tensor([[0.4902],
+        [0.5000],
+        [0.5000],
+        [0.5250],
+        [0.5000],
+        [0.5000],
+        [0.4820],
+        [0.5000],
+        [0.5219],
+        [0.5204]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 12:13:08 Epoch 18 Training Over
+03/04 12:13:08 G loss: 0.250
+03/04 12:13:08 Dr loss: 0.250
+03/04 12:13:08 Df loss: 0.251
+03/04 12:13:08 D loss: 0.501
+03/04 12:14:24 Epoch 19 starting
+03/04 12:39:53 D real output: 
+ tensor([[0.5260],
+        [0.5615],
+        [0.4833],
+        [0.5000],
+        [0.5084],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5610],
+        [0.4917]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 12:39:53 G output: 
+ tensor([[[ 0.1258, -0.2004, -0.3979,  0.5000],
+         [-0.0221,  0.0173, -0.5405,  0.5000],
+         [-0.0802,  0.1148, -0.5279,  0.5000],
+         [-0.0306,  0.0438, -0.5409,  0.5000],
+         [-0.1274,  0.4990, -0.3251,  0.5000],
+         [ 0.0374, -0.0479, -0.5087,  0.5000],
+         [ 0.0319, -0.0515, -0.5131,  0.5000],
+         [-0.0448,  0.0405, -0.5442,  0.5000],
+         [-0.1203,  0.3039, -0.4367,  0.5000],
+         [-0.0163,  0.0110, -0.5389,  0.5000]],
+
+        [[ 0.0030, -0.0167, -0.5322,  0.5000],
+         [ 0.1545, -0.2704, -0.3526,  0.5000],
+         [-0.0615,  0.1092, -0.5292,  0.5000],
+         [-0.0240,  0.0469, -0.5406,  0.5000],
+         [-0.0208,  0.0319, -0.5412,  0.5000],
+         [ 0.0054, -0.0116, -0.5330,  0.5000],
+         [-0.0178,  0.0080, -0.5412,  0.5000],
+         [ 0.0672, -0.1021, -0.4787,  0.5000],
+         [ 0.0071,  0.0049, -0.5345,  0.5000],
+         [-0.1161,  0.3438, -0.4125,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 12:39:53 D fake output: 
+ tensor([[0.4994],
+        [0.5403],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5478],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 12:39:54 Epoch 19 Training Over
+03/04 12:39:54 G loss: 0.251
+03/04 12:39:54 Dr loss: 0.250
+03/04 12:39:54 Df loss: 0.250
+03/04 12:39:54 D loss: 0.501
+03/04 12:39:54 Epoch 20 starting
+03/04 13:05:24 D real output: 
+ tensor([[0.5188],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5273],
+        [0.5000],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 13:05:24 G output: 
+ tensor([[[ 0.0889,  0.1819, -0.4732,  0.5000],
+         [ 0.1473,  0.4241, -0.3900,  0.5000],
+         [ 0.0978,  0.2367, -0.4594,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0805,  0.1167, -0.4881,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0119, -0.1377, -0.5341,  0.5000],
+         [ 0.0405, -0.0087, -0.5152,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.1400,  0.3979, -0.4006,  0.5000]],
+
+        [[ 0.1393,  0.4622, -0.3821,  0.5000],
+         [-0.0796, -0.4560, -0.5931,  0.5000],
+         [ 0.0420, -0.0123, -0.5169,  0.5000],
+         [ 0.0086, -0.1497, -0.5334,  0.5000],
+         [ 0.0614,  0.0886, -0.4997,  0.5000],
+         [ 0.0434, -0.0008, -0.5153,  0.5000],
+         [ 0.0865,  0.2052, -0.4726,  0.5000],
+         [ 0.0661,  0.1280, -0.4924,  0.5000],
+         [ 0.1446,  0.4653, -0.3816,  0.5000],
+         [-0.0073, -0.2085, -0.5357,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 13:05:24 D fake output: 
+ tensor([[0.5311],
+        [0.5000],
+        [0.5039],
+        [0.5000],
+        [0.5049],
+        [0.5163],
+        [0.5159],
+        [0.5000],
+        [0.4552],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 13:05:25 Epoch 20 Training Over
+03/04 13:05:25 G loss: 0.250
+03/04 13:05:25 Dr loss: 0.250
+03/04 13:05:25 Df loss: 0.251
+03/04 13:05:25 D loss: 0.501
+03/04 13:05:25 Epoch 21 starting
+03/04 13:30:55 D real output: 
+ tensor([[0.5146],
+        [0.5000],
+        [0.4627],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 13:30:55 G output: 
+ tensor([[[ 0.0271, -0.0507, -0.3771,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0216, -0.0938, -0.3520,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0214, -0.1478, -0.3227,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0317, -0.0597, -0.3696,  0.5000],
+         [ 0.0246, -0.0179, -0.3990,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000]],
+
+        [[ 0.0268, -0.0361, -0.4164,  0.5000],
+         [ 0.0111,  0.1342, -0.5231,  0.5000],
+         [ 0.0516, -0.1656, -0.3255,  0.5000],
+         [ 0.0269, -0.0495, -0.4065,  0.5000],
+         [ 0.0227, -0.0014, -0.4419,  0.5000],
+         [ 0.0361, -0.0732, -0.3822,  0.5000],
+         [ 0.0281, -0.0009, -0.4397,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0296, -0.0833, -0.3809,  0.5000],
+         [ 0.0230, -0.0130, -0.4327,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 13:30:55 D fake output: 
+ tensor([[0.5053],
+        [0.5000],
+        [0.4724],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4717],
+        [0.4995],
+        [0.5219],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 13:30:56 Epoch 21 Training Over
+03/04 13:30:56 G loss: 0.251
+03/04 13:30:56 Dr loss: 0.251
+03/04 13:30:56 Df loss: 0.250
+03/04 13:30:56 D loss: 0.501
+03/04 13:32:12 Epoch 22 starting
+03/04 13:57:43 D real output: 
+ tensor([[0.4476],
+        [0.4829],
+        [0.5000],
+        [0.4934],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4842],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 13:57:44 G output: 
+ tensor([[[ 1.9678e-02, -3.5469e-02, -4.6194e-01,  5.0000e-01],
+         [-1.2449e-02, -4.1898e-03, -4.9749e-01,  5.0000e-01],
+         [-9.9427e-03,  1.5030e-02, -5.0061e-01,  5.0000e-01],
+         [ 9.2374e-02,  5.6818e-01, -3.3190e-01,  5.0000e-01],
+         [-7.2618e-03,  1.0500e-01, -5.0081e-01,  5.0000e-01],
+         [-5.4292e-03, -2.1508e-02, -4.9397e-01,  5.0000e-01],
+         [-4.9253e-03, -1.6648e-02, -4.9598e-01,  5.0000e-01],
+         [-9.9526e-03,  1.2107e-02, -5.0005e-01,  5.0000e-01],
+         [-8.2948e-03,  2.7047e-02, -5.0134e-01,  5.0000e-01],
+         [-5.6794e-03,  6.1789e-03, -4.9925e-01,  5.0000e-01]],
+
+        [[ 4.1086e-02, -3.5460e-01, -5.7769e-01,  5.0000e-01],
+         [ 5.0216e-03, -2.4890e-02, -4.8963e-01,  5.0000e-01],
+         [ 2.9936e-04,  2.6389e-02, -4.9699e-01,  5.0000e-01],
+         [ 2.1035e-02,  1.9653e-01, -4.7997e-01,  5.0000e-01],
+         [ 1.3843e-02, -2.0020e-02, -4.8887e-01,  5.0000e-01],
+         [ 1.2182e-02, -3.3714e-02, -4.8033e-01,  5.0000e-01],
+         [ 2.8458e-02, -3.3839e-02, -4.7011e-01,  5.0000e-01],
+         [ 6.7326e-03,  9.5378e-02, -4.9379e-01,  5.0000e-01],
+         [ 6.0945e-03,  2.0132e-03, -4.9488e-01,  5.0000e-01],
+         [-1.9049e-03,  3.6102e-02, -4.9699e-01,  5.0000e-01]]],
+       device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 13:57:44 D fake output: 
+ tensor([[0.4892],
+        [0.5300],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4845],
+        [0.5000],
+        [0.5000],
+        [0.4951],
+        [0.4629]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 13:57:44 Epoch 22 Training Over
+03/04 13:57:44 G loss: 0.251
+03/04 13:57:44 Dr loss: 0.250
+03/04 13:57:44 Df loss: 0.250
+03/04 13:57:44 D loss: 0.501
+03/04 13:57:44 Epoch 23 starting
+03/04 14:23:14 D real output: 
+ tensor([[0.5438],
+        [0.4952],
+        [0.4916],
+        [0.5221],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4491]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 14:23:14 G output: 
+ tensor([[[ 0.0077,  0.0079, -0.5470,  0.5000],
+         [ 0.0287, -0.2194, -0.3439,  0.5000],
+         [ 0.0366, -0.0902, -0.4533,  0.5000],
+         [ 0.0390, -0.1444, -0.4043,  0.5000],
+         [ 0.0065, -0.3352, -0.2619,  0.5000],
+         [ 0.0146,  0.0119, -0.5434,  0.5000],
+         [ 0.0247, -0.0145, -0.5222,  0.5000],
+         [-0.0152,  0.1368, -0.6308,  0.5000],
+         [ 0.0300, -0.1216, -0.4258,  0.5000],
+         [ 0.0172, -0.0254, -0.5163,  0.5000]],
+
+        [[-0.0118,  0.1305, -0.6260,  0.5000],
+         [ 0.0059,  0.0247, -0.5598,  0.5000],
+         [-0.0017,  0.0965, -0.6079,  0.5000],
+         [-0.0009,  0.0682, -0.5897,  0.5000],
+         [-0.0184, -0.3985, -0.2279,  0.5000],
+         [ 0.0321, -0.1322, -0.4220,  0.5000],
+         [ 0.0155,  0.0630, -0.5824,  0.5000],
+         [-0.0469,  0.2824, -0.6795,  0.5000],
+         [-0.0126, -0.3923, -0.2321,  0.5000],
+         [ 0.0145,  0.0200, -0.5535,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 14:23:14 D fake output: 
+ tensor([[0.5000],
+        [0.4505],
+        [0.4755],
+        [0.5000],
+        [0.4991],
+        [0.5000],
+        [0.5000],
+        [0.4907],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 14:23:14 Epoch 23 Training Over
+03/04 14:23:14 G loss: 0.250
+03/04 14:23:14 Dr loss: 0.250
+03/04 14:23:14 Df loss: 0.250
+03/04 14:23:14 D loss: 0.501
+03/04 14:23:14 Epoch 24 starting
+03/04 14:48:43 D real output: 
+ tensor([[0.4820],
+        [0.4912],
+        [0.4859],
+        [0.4855],
+        [0.5433],
+        [0.5000],
+        [0.5072],
+        [0.5041],
+        [0.5000],
+        [0.5237]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 14:48:43 G output: 
+ tensor([[[ 0.0273,  0.0107, -0.4732,  0.5000],
+         [ 0.0276,  0.0070, -0.4829,  0.5000],
+         [ 0.0267, -0.0062, -0.4744,  0.5000],
+         [ 0.0308, -0.0407, -0.4553,  0.5000],
+         [ 0.0298,  0.0162, -0.4755,  0.5000],
+         [ 0.0309,  0.0150, -0.4705,  0.5000],
+         [ 0.0281, -0.0014, -0.4647,  0.5000],
+         [ 0.0264,  0.0067, -0.4809,  0.5000],
+         [ 0.0315,  0.0109, -0.4721,  0.5000],
+         [ 0.0257,  0.0218, -0.4877,  0.5000]],
+
+        [[ 0.0323,  0.0203, -0.4763,  0.5000],
+         [ 0.0338, -0.0076, -0.4753,  0.5000],
+         [ 0.0308,  0.0101, -0.4761,  0.5000],
+         [ 0.0277,  0.0119, -0.4891,  0.5000],
+         [ 0.0283,  0.0280, -0.4909,  0.5000],
+         [ 0.0278, -0.0188, -0.4653,  0.5000],
+         [ 0.0325, -0.0042, -0.4793,  0.5000],
+         [ 0.0259,  0.0098, -0.4861,  0.5000],
+         [ 0.0331,  0.0012, -0.4800,  0.5000],
+         [ 0.0277,  0.0273, -0.4863,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 14:48:43 D fake output: 
+ tensor([[0.5445],
+        [0.4923],
+        [0.5000],
+        [0.4876],
+        [0.5000],
+        [0.4838],
+        [0.5114],
+        [0.5000],
+        [0.5000],
+        [0.5093]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 14:48:44 Epoch 24 Training Over
+03/04 14:48:44 G loss: 0.250
+03/04 14:48:44 Dr loss: 0.250
+03/04 14:48:44 Df loss: 0.250
+03/04 14:48:44 D loss: 0.500
+03/04 14:49:59 Epoch 25 starting
+03/04 15:16:08 D real output: 
+ tensor([[0.5144],
+        [0.4856],
+        [0.5055],
+        [0.5000],
+        [0.5000],
+        [0.5112],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4774]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 15:16:08 G output: 
+ tensor([[[ 0.0262, -0.0204, -0.4901,  0.5000],
+         [ 0.0351,  0.1274, -0.4916,  0.5000],
+         [-0.0502, -0.1194, -0.5459,  0.5000],
+         [ 0.0268, -0.0302, -0.4899,  0.5000],
+         [ 0.0142, -0.0880, -0.4956,  0.5000],
+         [ 0.0284,  0.0544, -0.4913,  0.5000],
+         [ 0.0369,  0.1537, -0.4917,  0.5000],
+         [ 0.0301,  0.0631, -0.4915,  0.5000],
+         [-0.0686, -0.1314, -0.5495,  0.5000],
+         [ 0.0209, -0.0527, -0.4925,  0.5000]],
+
+        [[ 0.0291,  0.2240, -0.4919,  0.5000],
+         [ 0.0273, -0.0221, -0.4916,  0.5000],
+         [ 0.0116, -0.0871, -0.4940,  0.5000],
+         [ 0.0298, -0.0317, -0.4923,  0.5000],
+         [ 0.0376,  0.1483, -0.4916,  0.5000],
+         [ 0.0283, -0.0038, -0.4923,  0.5000],
+         [ 0.0282, -0.0111, -0.4919,  0.5000],
+         [ 0.0025, -0.1145, -0.5111,  0.5000],
+         [ 0.0352,  0.1156, -0.4922,  0.5000],
+         [ 0.0298,  0.0320, -0.4916,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 15:16:08 D fake output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.4831],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5071],
+        [0.5000],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 15:16:09 Epoch 25 Training Over
+03/04 15:16:09 G loss: 0.251
+03/04 15:16:09 Dr loss: 0.251
+03/04 15:16:09 Df loss: 0.250
+03/04 15:16:09 D loss: 0.501
+03/04 15:16:09 Epoch 26 starting
+03/04 15:42:10 D real output: 
+ tensor([[0.4841],
+        [0.5000],
+        [0.4769],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5136],
+        [0.5476]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 15:42:11 G output: 
+ tensor([[[ 2.1709e-02,  5.0610e-02, -5.0344e-01,  5.0000e-01],
+         [ 1.8465e-02, -8.0344e-03, -4.9656e-01,  5.0000e-01],
+         [ 1.5590e-02, -1.0793e-01, -4.8037e-01,  5.0000e-01],
+         [ 2.1876e-02,  5.6685e-02, -5.0394e-01,  5.0000e-01],
+         [ 1.7364e-02,  1.5518e-03, -4.9821e-01,  5.0000e-01],
+         [ 1.2846e-02, -1.0720e-01, -4.7941e-01,  5.0000e-01],
+         [ 2.1065e-02,  2.9036e-02, -5.0100e-01,  5.0000e-01],
+         [ 1.8704e-02,  2.3010e-02, -5.0076e-01,  5.0000e-01],
+         [-0.0000e+00, -0.0000e+00, -0.0000e+00, -5.0000e-01],
+         [ 2.1689e-02,  9.5995e-02, -5.0839e-01,  5.0000e-01]],
+
+        [[ 3.4925e-02, -4.8430e-04, -4.9763e-01,  5.0000e-01],
+         [ 1.8070e-02,  2.2501e-02, -5.0336e-01,  5.0000e-01],
+         [ 1.3492e-02, -5.2050e-02, -4.9757e-01,  5.0000e-01],
+         [ 4.0377e-02,  1.6605e-01, -5.0696e-01,  5.0000e-01],
+         [-0.0000e+00, -0.0000e+00, -0.0000e+00, -5.0000e-01],
+         [ 3.2348e-02,  1.2250e-01, -5.0644e-01,  5.0000e-01],
+         [ 1.8974e-02, -1.0221e-02, -5.0070e-01,  5.0000e-01],
+         [ 2.6539e-02, -2.2467e-02, -4.9832e-01,  5.0000e-01],
+         [ 1.7794e-02, -2.3033e-02, -4.9967e-01,  5.0000e-01],
+         [ 1.1992e-02, -4.4705e-02, -4.9844e-01,  5.0000e-01]]],
+       device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 15:42:11 D fake output: 
+ tensor([[0.5224],
+        [0.5000],
+        [0.5000],
+        [0.4714],
+        [0.4756],
+        [0.5000],
+        [0.4873],
+        [0.4867],
+        [0.4956],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 15:42:11 Epoch 26 Training Over
+03/04 15:42:11 G loss: 0.250
+03/04 15:42:11 Dr loss: 0.250
+03/04 15:42:11 Df loss: 0.250
+03/04 15:42:11 D loss: 0.500
+03/04 15:42:11 Epoch 27 starting
+03/04 16:08:06 D real output: 
+ tensor([[0.5039],
+        [0.5085],
+        [0.5077],
+        [0.4720],
+        [0.5000],
+        [0.5000],
+        [0.4824],
+        [0.4986],
+        [0.5146],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 16:08:06 G output: 
+ tensor([[[ 0.0187,  0.0243, -0.5413,  0.5000],
+         [ 0.0973, -0.0600, -0.3229,  0.5000],
+         [ 0.0371,  0.0089, -0.5059,  0.5000],
+         [ 0.0116,  0.0287, -0.5481,  0.5000],
+         [-0.0971,  0.1598, -0.6846,  0.5000],
+         [-0.0654,  0.1165, -0.6541,  0.5000],
+         [ 0.0631, -0.0187, -0.4472,  0.5000],
+         [-0.0526,  0.1017, -0.6393,  0.5000],
+         [-0.0492,  0.0916, -0.6313,  0.5000],
+         [-0.0050,  0.0466, -0.5761,  0.5000]],
+
+        [[ 0.0249,  0.0236, -0.5344,  0.5000],
+         [ 0.0557, -0.0100, -0.4660,  0.5000],
+         [-0.0988,  0.1604, -0.6856,  0.5000],
+         [ 0.0430,  0.0070, -0.4999,  0.5000],
+         [-0.0710,  0.1256, -0.6596,  0.5000],
+         [ 0.1068, -0.0751, -0.2358,  0.5000],
+         [ 0.0653, -0.0207, -0.4347,  0.5000],
+         [-0.0807,  0.1338, -0.6672,  0.5000],
+         [ 0.0447,  0.0032, -0.4945,  0.5000],
+         [-0.0571,  0.1178, -0.6531,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 16:08:06 D fake output: 
+ tensor([[0.4573],
+        [0.5000],
+        [0.5407],
+        [0.4834],
+        [0.5000],
+        [0.5000],
+        [0.4728],
+        [0.5103],
+        [0.4898],
+        [0.4818]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 16:08:06 Epoch 27 Training Over
+03/04 16:08:06 G loss: 0.250
+03/04 16:08:06 Dr loss: 0.250
+03/04 16:08:06 Df loss: 0.250
+03/04 16:08:06 D loss: 0.500
+03/04 16:09:24 Epoch 28 starting
+03/04 16:35:22 D real output: 
+ tensor([[0.5022],
+        [0.5000],
+        [0.5758],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5050],
+        [0.5000],
+        [0.5303]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 16:35:22 G output: 
+ tensor([[[ 0.0427, -0.0639, -0.4766,  0.5000],
+         [ 0.0095,  0.0290, -0.5175,  0.5000],
+         [ 0.0090,  0.0749, -0.5198,  0.5000],
+         [-0.0046,  0.1720, -0.5179,  0.5000],
+         [ 0.0350, -0.0310, -0.5003,  0.5000],
+         [ 0.0012,  0.0787, -0.5213,  0.5000],
+         [ 0.0552, -0.0635, -0.4692,  0.5000],
+         [ 0.0073,  0.0470, -0.5190,  0.5000],
+         [ 0.0363, -0.0475, -0.4906,  0.5000],
+         [ 0.0162,  0.0171, -0.5161,  0.5000]],
+
+        [[ 0.0124,  0.0462, -0.5183,  0.5000],
+         [ 0.0113,  0.0776, -0.5194,  0.5000],
+         [ 0.0213, -0.0085, -0.5089,  0.5000],
+         [ 0.0116,  0.0505, -0.5183,  0.5000],
+         [ 0.0101,  0.1097, -0.5197,  0.5000],
+         [ 0.0073,  0.0872, -0.5201,  0.5000],
+         [ 0.0140,  0.0211, -0.5159,  0.5000],
+         [ 0.0158,  0.0209, -0.5163,  0.5000],
+         [ 0.0261, -0.0141, -0.5062,  0.5000],
+         [ 0.0161,  0.0384, -0.5176,  0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 16:35:22 D fake output: 
+ tensor([[0.4968],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5079],
+        [0.4866],
+        [0.5000],
+        [0.4773],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 16:35:22 Epoch 28 Training Over
+03/04 16:35:22 G loss: 0.251
+03/04 16:35:22 Dr loss: 0.250
+03/04 16:35:22 Df loss: 0.250
+03/04 16:35:22 D loss: 0.501
+03/04 16:35:22 Epoch 29 starting
+03/04 17:01:10 D real output: 
+ tensor([[0.5372],
+        [0.5184],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 17:01:10 G output: 
+ tensor([[[ 3.6649e-03, -3.3794e-01, -3.3317e-01,  5.0000e-01],
+         [ 4.5018e-02,  1.0684e-01, -6.2138e-01,  5.0000e-01],
+         [ 1.2525e-02, -2.7804e-01, -3.5619e-01,  5.0000e-01],
+         [ 3.5767e-02,  1.5075e-01, -6.5101e-01,  5.0000e-01],
+         [ 2.8428e-02,  3.9203e-01, -7.4884e-01,  5.0000e-01],
+         [ 3.0118e-02,  3.6408e-01, -7.4218e-01,  5.0000e-01],
+         [-1.7416e-02, -4.7866e-01, -2.6392e-01,  5.0000e-01],
+         [ 4.1408e-02,  4.0272e-02, -5.7224e-01,  5.0000e-01],
+         [-1.7037e-02, -4.9828e-01, -2.5915e-01,  5.0000e-01],
+         [ 4.6949e-02,  1.5898e-01, -6.5497e-01,  5.0000e-01]],
+
+        [[-7.6473e-03, -3.2269e-01, -2.9345e-01,  5.0000e-01],
+         [ 4.5604e-02,  1.3242e-01, -6.3288e-01,  5.0000e-01],
+         [ 3.0394e-02,  2.2225e-02, -5.5189e-01,  5.0000e-01],
+         [ 2.3100e-02, -1.2489e-01, -4.3159e-01,  5.0000e-01],
+         [ 1.7612e-02, -8.3077e-02, -4.7288e-01,  5.0000e-01],
+         [ 3.7029e-02,  9.5266e-02, -6.1196e-01,  5.0000e-01],
+         [-3.0096e-03, -2.5958e-01, -3.4453e-01,  5.0000e-01],
+         [ 1.3968e-04, -2.0410e-01, -3.7987e-01,  5.0000e-01],
+         [ 4.1473e-02,  5.0807e-02, -5.7201e-01,  5.0000e-01],
+         [-1.2716e-02, -3.1010e-01, -3.1985e-01,  5.0000e-01]]],
+       device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 17:01:10 D fake output: 
+ tensor([[0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.5204],
+        [0.5000],
+        [0.4562],
+        [0.5000],
+        [0.5000],
+        [0.4783]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 17:01:11 Epoch 29 Training Over
+03/04 17:01:11 G loss: 0.250
+03/04 17:01:11 Dr loss: 0.250
+03/04 17:01:11 Df loss: 0.252
+03/04 17:01:11 D loss: 0.501
+03/04 17:01:11 Epoch 30 starting
+03/04 17:27:00 D real output: 
+ tensor([[0.4744],
+        [0.5000],
+        [0.4807],
+        [0.4627],
+        [0.4709],
+        [0.4895],
+        [0.5000],
+        [0.5130],
+        [0.5000],
+        [0.4932]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 17:27:00 G output: 
+ tensor([[[-0.0016, -0.0436, -0.5080,  0.5000],
+         [-0.0096, -0.0311, -0.5169,  0.5000],
+         [ 0.0427,  0.0577, -0.5361,  0.5000],
+         [ 0.0484,  0.0652, -0.5390,  0.5000],
+         [ 0.0152, -0.0391, -0.4921,  0.5000],
+         [ 0.0404,  0.0190, -0.5082,  0.5000],
+         [ 0.0402,  0.0391, -0.5216,  0.5000],
+         [ 0.0191, -0.0335, -0.4953,  0.5000],
+         [ 0.0192, -0.0346, -0.4892,  0.5000],
+         [ 0.0443,  0.0527, -0.5306,  0.5000]],
+
+        [[-0.0000, -0.0000, -0.0000, -0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0323,  0.0377, -0.5311,  0.5000],
+         [ 0.0379,  0.0681, -0.5446,  0.5000],
+         [ 0.0568,  0.2284, -0.6141,  0.5000],
+         [-0.0154, -0.0344, -0.5312,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000],
+         [ 0.0509,  0.1779, -0.5946,  0.5000],
+         [ 0.0222,  0.0073, -0.5214,  0.5000],
+         [-0.0000, -0.0000, -0.0000, -0.5000]]], device='cuda:0',
+       grad_fn=<SliceBackward0>)
+03/04 17:27:00 D fake output: 
+ tensor([[0.4772],
+        [0.5000],
+        [0.5000],
+        [0.5297],
+        [0.4534],
+        [0.5000],
+        [0.5000],
+        [0.5000],
+        [0.4880],
+        [0.5160]], device='cuda:0', grad_fn=<SliceBackward0>)
+03/04 17:27:00 Epoch 30 Training Over
+03/04 17:27:00 G loss: 0.249
+03/04 17:27:00 Dr loss: 0.248
+03/04 17:27:00 Df loss: 0.255
+03/04 17:27:00 D loss: 0.503
